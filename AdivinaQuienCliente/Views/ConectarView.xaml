@@ -1,16 +1,16 @@
-﻿<Window x:Class="AdivinaQuienCliente.Views.ConectarView"
+﻿<UserControl x:Class="AdivinaQuienCliente.Views.ConectarView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienCliente.Views"
         mc:Ignorable="d"
-        Title="ConectarView" Height="450" Width="400">
-    <Window.Background>
+         Height="450" Width="400">
+    <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
                 Stretch="UniformToFill" 
                 Opacity="0.15"/>
-    </Window.Background>
+    </UserControl.Background>
     <Grid>
         <Border Background="#EE1515" Height="100" VerticalAlignment="Top"/>
         <StackPanel Margin="20">
@@ -84,4 +84,4 @@
                        FontSize="10"/>
         </StackPanel>
     </Grid>
-</Window>
+</UserControl>
