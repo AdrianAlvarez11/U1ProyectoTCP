@@ -1,36 +1,36 @@
-﻿<UserControl x:Class="AdivinaQuienServidor.Views.EsperandoJugadorView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AdivinaQuienServidor.Views"
-        mc:Ignorable="d"
-        Height="400" Width="400">
+﻿<UserControl x:Class="AdivinaQuienCliente.Views.EsperandoJugadorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AdivinaQuienCliente.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400">
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
-                Stretch="UniformToFill" 
-                Opacity="0.15"/>
+             Stretch="UniformToFill" 
+             Opacity="0.15"/>
     </UserControl.Background>
     <Grid>
         <Border Background="#EE1515" Height="100" VerticalAlignment="Top"/>
         <StackPanel Margin="20">
             <Label Content="ADIVINA QUIÉN" 
-                   HorizontalAlignment="Center" 
-                   FontFamily="Bernard MT Condensed" 
-                   FontSize="45" 
-                   Foreground="White" 
-                   FontWeight="Bold">
+                HorizontalAlignment="Center" 
+                FontFamily="Bernard MT Condensed" 
+                FontSize="45" 
+                Foreground="White" 
+                FontWeight="Bold">
                 <Label.Effect>
                     <DropShadowEffect Color="#3B4CCA" BlurRadius="2" ShadowDepth="4" Direction="320"/>
                 </Label.Effect>
             </Label>
 
             <Label Content="Pokémon" 
-                   HorizontalAlignment="Center" 
-                   FontSize="16" 
-                   Foreground="#FFDE00" 
-                   FontWeight="Bold" 
-                   Margin="0,-15,0,30">
+                HorizontalAlignment="Center" 
+                FontSize="16" 
+                Foreground="#FFDE00" 
+                FontWeight="Bold" 
+                Margin="0,-15,0,30">
                 <Label.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="1" ShadowDepth="2"/>
                 </Label.Effect>
@@ -52,15 +52,15 @@
             </Border>
 
             <TextBlock Text="Adrián Alvarez Farías" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,30,0,0" 
-                       Foreground="#999" 
-                       FontSize="10"/>
+                    HorizontalAlignment="Center" 
+                    Margin="0,30,0,0" 
+                    Foreground="#999" 
+                    FontSize="10"/>
             <TextBlock Text="Erick Gonzalez Aranda" 
-           HorizontalAlignment="Center" 
-           Margin="0,0,0,0" 
-           Foreground="#999" 
-           FontSize="10"/>
+        HorizontalAlignment="Center" 
+        Margin="0,0,0,0" 
+        Foreground="#999" 
+        FontSize="10"/>
         </StackPanel>
     </Grid>
 </UserControl>

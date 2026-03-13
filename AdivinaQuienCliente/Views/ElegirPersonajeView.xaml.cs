@@ -10,12 +10,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AdivinaQuienLocal.Views
+namespace AdivinaQuienCliente.Views
 {
     /// <summary>
     /// Lógica de interacción para ElegirPersonajeView.xaml
     /// </summary>
-    public partial class ElegirPersonajeView : Window
+    public partial class ElegirPersonajeView : UserControl
     {
         public ElegirPersonajeView()
         {

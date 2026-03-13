@@ -104,7 +104,7 @@ namespace AdivinaQuienCliente.Services
                 {
                     while (Servidor.Conexion.Connected)
                     {
-                        if(Servidor.Conexion.Available > 0 && !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectRead))
+                        if(Servidor.Conexion.Available > 0/* && !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectRead*/)
                         {
                             var stream = Servidor.Conexion.GetStream();
                             var buffer = new byte[Servidor.Conexion.Available];

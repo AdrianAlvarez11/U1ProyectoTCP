@@ -175,7 +175,7 @@ namespace AdivinaQuienServidor.Services
                 {
                     while (client.Connected)
                     {
-                        if (client.Available > 0 && !client.Client.Poll(1000, SelectMode.SelectRead))
+                        if (client.Available > 0 /*&& !client.Client.Poll(1000, SelectMode.SelectRead)*/)
                         {
                             var stream = client.GetStream();
                             var buffer = new byte[client.Available];

@@ -15,7 +15,7 @@ namespace AdivinaQuienCliente.Views
     /// <summary>
     /// Lógica de interacción para ConectarView.xaml
     /// </summary>
-    public partial class ConectarView : Window
+    public partial class ConectarView : UserControl
     {
         public ConectarView()
         {
