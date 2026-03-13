@@ -49,7 +49,7 @@ namespace AdivinaQuienServidor.Services
         bool salaAbierta = false;
 
         public event Action<string>? ClienteConectado; //despues de cliente conectado, servidor debe escoger pokemon
-        public event Action? PartidaIniciada;
+        public event Action<EstadoJuego>? PartidaIniciada;
         public event Action? ClienteDesconectado;
 
 
@@ -98,8 +98,6 @@ namespace AdivinaQuienServidor.Services
                             Nombre = nombre ?? ""
                         };
 
-                        JugadorCliente = cliente;
-
 
                         if (JugadorServer.Nombre == nombre)
                             {
@@ -116,10 +114,8 @@ namespace AdivinaQuienServidor.Services
                             }
                             else
                             {
-                                
-                                ClienteConectado?.Invoke(JugadorCliente.Nombre);
-
-
+                                JugadorCliente = cliente;
+                            
                                 var bienvenido = new JugadorConectadoComando
                                 {
                                     Comando = Orden.JugadorConectado,
@@ -127,10 +123,11 @@ namespace AdivinaQuienServidor.Services
                                 };
 
                                 EnviarComando(bienvenido);
+                                ClienteConectado?.Invoke(JugadorCliente.Nombre);
 
                                 Thread hiloEscuchar = new Thread(EscucharCliente);
                                 hiloEscuchar.IsBackground = true;
-                                hiloEscuchar.Start(clienteNuevo);
+                                hiloEscuchar.Start();
 
                                 salaAbierta = false;
                                 Servidor.Stop();
@@ -175,7 +172,7 @@ namespace AdivinaQuienServidor.Services
                 {
                     while (client.Connected)
                     {
-                        if (client.Available > 0 && !client.Client.Poll(1000, SelectMode.SelectRead))
+                        if (client.Available > 0 /*&& !client.Client.Poll(1000, SelectMode.SelectRead)*/)
                         {
                             var stream = client.GetStream();
                             var buffer = new byte[client.Available];
@@ -210,15 +207,16 @@ namespace AdivinaQuienServidor.Services
                                                 var comandoIniciar = new IniciarPartidaComando
                                                 {
                                                     Comando = Orden.IniciarPartida,
-                                                    NombreRival = JugadorServer.Nombre
+                                                    JugadorTurno= JugadorServer,
+                                                    Ronda=1,
+                                                    Historial = Juego.Historial
                                                 };
 
 
                                                 EnviarComando(comandoIniciar);
 
-                                                PartidaIniciada?.Invoke();
+                                                PartidaIniciada?.Invoke(Juego);
 
-                                                //falta completar el service de cliente, la navegacion y los viewmodels. cambiar vistas a usercontrols. bu
                                             }
                                         }
                                         break;

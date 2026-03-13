@@ -15,7 +15,7 @@ namespace AdivinaQuienServidor.Views
     /// <summary>
     /// Lógica de interacción para JuegoView.xaml
     /// </summary>
-    public partial class JuegoView : Window
+    public partial class JuegoView : UserControl
     {
         public JuegoView()
         {

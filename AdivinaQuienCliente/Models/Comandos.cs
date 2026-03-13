@@ -27,7 +27,10 @@ namespace AdivinaQuienCliente.Models
     }
     public class IniciarPartidaComando : Comandos
     {
-        public string NombreRival { get; set; } = null!;
+        public Jugador JugadorTurno { get; set; } = null!;
+
+        public List<string>? Historial { get; set; }
+        public int Ronda { get; set; }
     }
 
     public class SeleccionarPokemonComando : Comandos
