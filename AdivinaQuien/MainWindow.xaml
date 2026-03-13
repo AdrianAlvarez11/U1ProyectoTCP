@@ -3,10 +3,47 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AdivinaQuien"
+        xmlns:local="clr-namespace:AdivinaQuienServidor.Views"
+        xmlns:vm ="clr-namespace:AdivinaQuienServidor.Viewmodels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Adivina Quien Pokemon" Height="450" Width="800">
+
+    <Window.DataContext>
+        <vm:ServidorViewmodel></vm:ServidorViewmodel>
+    </Window.DataContext>
+    
     <Grid>
 
+        <Grid.Resources>
+            <local:AbrirSalaView x:Key="VistaAbrir"/>
+            <local:JuegoView x:Key="VistaJuego"/>
+            <local:ResultadoView x:Key="VistaResultados"/>
+            <local:EsperandoJugadorView x:Key="VistaEsperando"/>
+            <local:ElegirPersonajeView x:Key="VistaElegirPersonaje"></local:ElegirPersonajeView>
+        </Grid.Resources>
+
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.AbrirSala}">
+                            <Setter Property="Content" Value="{StaticResource VistaAbrir}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.Juego}">
+                            <Setter Property="Content" Value="{StaticResource VistaJuego}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.Resultados}">
+                            <Setter Property="Content" Value="{StaticResource VistaResultados}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.EsperandoJugador}">
+                            <Setter Property="Content" Value="{StaticResource VistaEsperando}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.ElegirPersonaje}">
+                            <Setter Property="Content" Value="{StaticResource VistaElegirPersonaje}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </Grid>
 </Window>

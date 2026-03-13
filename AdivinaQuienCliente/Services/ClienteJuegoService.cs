@@ -47,7 +47,7 @@ namespace AdivinaQuienCliente.Services
         public event Action? ClienteAceptado;
         public event Action? ClienteRechazado;
         public event Action? ServerEscogePokemon;
-        public event Action? PartidaIniciada;
+        public event Action<EstadoJuego>? PartidaIniciada;
 
         public void Conectar(IPAddress serverIP, string nombreJugador)
         {
@@ -68,7 +68,7 @@ namespace AdivinaQuienCliente.Services
                     var unirseCommand = new UnirseSalaComando
                     {
                         Comando = Orden.UnirseSala,
-                        NombreJugador = nombreJugador,
+                        NombreJugador = nombreJugador
                     };
 
                     JugadorCliente = new() { Nombre = nombreJugador };
@@ -104,7 +104,7 @@ namespace AdivinaQuienCliente.Services
                 {
                     while (Servidor.Conexion.Connected)
                     {
-                        if(Servidor.Conexion.Available > 0 && !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectRead))
+                        if(Servidor.Conexion.Available > 0/* && !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectRead*/)
                         {
                             var stream = Servidor.Conexion.GetStream();
                             var buffer = new byte[Servidor.Conexion.Available];
@@ -135,6 +135,23 @@ namespace AdivinaQuienCliente.Services
                                     case Orden.SeleccionarPokemon:
                                         ServerEscogePokemon?.Invoke();
                                         break;
+
+                                        case Orden.IniciarPartida:
+                                            
+                                            var iniciar = JsonSerializer.Deserialize<IniciarPartidaComando>(json);
+                                            if(iniciar != null)
+                                            {
+                                            EstadoJuego juego = new()
+                                            {
+                                                Historial = iniciar.Historial ?? new List<string>(),
+                                                JugadorTurno = iniciar.JugadorTurno,
+                                                Ronda = iniciar.Ronda
+
+                                            };
+                                            PartidaIniciada?.Invoke(juego);
+                                        }
+
+                                            break;
 
 
                                     default: break;
@@ -172,7 +189,6 @@ namespace AdivinaQuienCliente.Services
 
                 EnviarComando(comando);
 
-                PartidaIniciada?.Invoke();
             }
         }
     }

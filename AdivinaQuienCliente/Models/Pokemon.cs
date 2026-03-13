@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdivinaQuienServidor.Models
+namespace AdivinaQuienCliente.Models
 {
     public class Pokemon
     {

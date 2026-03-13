@@ -8,16 +8,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace AdivinaQuienServidor.Views
 {
     /// <summary>
-    /// Lógica de interacción para EsperandoJugadorView.xaml
+    /// Lógica de interacción para ResultadoView.xaml
     /// </summary>
-    public partial class EsperandoJugadorView : UserControl
+    public partial class ResultadoView : UserControl
     {
-        public EsperandoJugadorView()
+        public ResultadoView()
         {
             InitializeComponent();
         }

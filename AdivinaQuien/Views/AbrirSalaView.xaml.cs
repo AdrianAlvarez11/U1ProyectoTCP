@@ -15,7 +15,7 @@ namespace AdivinaQuienServidor.Views
     /// <summary>
     /// Lógica de interacción para AbrirSalaView.xaml
     /// </summary>
-    public partial class AbrirSalaView : Window
+    public partial class AbrirSalaView : UserControl
     {
         public AbrirSalaView()
         {
