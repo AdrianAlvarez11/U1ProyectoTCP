@@ -43,7 +43,7 @@
 
                 <StackPanel>
                     <TextBlock Text="Nombre:" FontSize="12" FontWeight="Bold" Foreground="#333" Margin="0,0,0,5"/>
-                    <TextBox Width="250" Height="35" 
+                    <TextBox Text="{Binding NombreCliente}" Width="250" Height="35" 
                              FontSize="18" 
                              Background="#F9F9F9"
                              BorderBrush="#CCC"
@@ -54,14 +54,14 @@
                     <TextBlock Text="DIRECCIÓN IP DE LA SALA:" FontSize="12" FontWeight="Bold" Foreground="#333" Margin="0,0,0,5"/>
                     <TextBox Width="250" Height="35" 
                              FontSize="18" 
-                             Text="127.0.0.1" 
+                             Text="{Binding DireccionIP}" 
                              Background="#F9F9F9"
                              BorderBrush="#CCC"
                              VerticalContentAlignment="Center" 
                              Padding="5,0"
                              Margin="0,0,0,25"/>
 
-                    <Button Content="Unirse" 
+                    <Button Command="{Binding UnirseSalaCommand}" Content="Unirse" 
                             Width="200" Height="45" 
                             Background="#3B4CCA" 
                             Foreground="White" 
@@ -77,7 +77,7 @@
                 </StackPanel>
             </Border>
 
-            <TextBlock Text="© 2024 Pokemon Adivina Quien" 
+            <TextBlock Text="Pokemon Adivina Quien" 
                        HorizontalAlignment="Center" 
                        Margin="0,30,0,0" 
                        Foreground="#999" 

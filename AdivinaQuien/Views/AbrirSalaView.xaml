@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienServidor.Views"
         mc:Ignorable="d"
+        
         Height="450" Width="400">
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
@@ -43,15 +44,17 @@
 
                 <StackPanel>
                     <TextBlock Text="Nombre:" FontSize="12" FontWeight="Bold" Foreground="#333" Margin="0,0,0,5"/>
-                    <TextBox Width="250" Height="35" 
+                    <TextBox Text="{Binding NombreServidor}" Width="250" Height="35" 
                              FontSize="18" 
                              Background="#F9F9F9"
                              BorderBrush="#CCC"
                              VerticalContentAlignment="Center" 
                              Padding="5,0"
                              Margin="0,0,0,20"/>
+                    
+                    <TextBlock Text="{Binding Mensaje}" FontSize="12" FontWeight="Bold" TextAlignment="Center" Foreground="Red" Margin="0,0,0,10"/>
 
-                    <Button Content="Abrir sala" 
+                    <Button Command="{Binding AbrirSalaCommand}" Content="Abrir sala" 
                             Width="200" Height="45" 
                             Background="#3B4CCA" 
                             Foreground="White" 

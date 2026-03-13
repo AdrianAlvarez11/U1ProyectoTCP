@@ -46,7 +46,7 @@
                     <TextBlock Text="ESPERANDO JUGADOR..." TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#333" Margin="0,0,0,5"/>
 
 
-                    <TextBlock Text="Error" FontSize="12" FontWeight="Bold" TextAlignment="Center" Foreground="Red" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding Mensaje}" FontSize="12" FontWeight="Bold" TextAlignment="Center" Foreground="Red" Margin="0,0,0,10"/>
 
                 </StackPanel>
             </Border>
