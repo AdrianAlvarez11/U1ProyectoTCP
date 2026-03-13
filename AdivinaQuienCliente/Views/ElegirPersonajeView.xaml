@@ -45,63 +45,48 @@
 
 
 
-        <UniformGrid Columns="6" Grid.Row="1" VerticalAlignment="Top">
-            <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                        <Image Source="/Resources/Images/Ditto.png" Stretch="Uniform"/>
+
+        <ItemsControl ItemsSource="{Binding Pokemons}" Grid.Row="1" VerticalAlignment="Top">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="150">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
+                                <Image Source="{Binding Imagen}" Stretch="Uniform"/>
+                            </Border>
+
+                            <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
+
+                            <Button Command="{Binding DataContext.ElegirPokemonCommand,
+                                        RelativeSource={RelativeSource AncestorType=Window}}" 
+                                    CommandParameter="{Binding Nombre}" Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
                     </Border>
+                </DataTemplate>
 
-                    <TextBlock Grid.Row="1" Text="Ditto" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
 
-                    <Button Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
-            </Border>
+            </ItemsControl.ItemTemplate>
 
-            <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                        <Image Source="/Resources/Images/Alakazam.png" Stretch="Uniform"/>
-                    </Border>
-                    <TextBlock Grid.Row="1" Text="Alakazam" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-                    <Button Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                </Grid>
-            </Border>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
 
-            <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                        <Image Source="/Resources/Images/Eevee.png" Stretch="Uniform"/>
-                    </Border>
-                    <TextBlock Grid.Row="1" Text="Eevee" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-                    <Button Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                </Grid>
-            </Border>
-
-        </UniformGrid>
-       
 
     </Grid>
 </UserControl>

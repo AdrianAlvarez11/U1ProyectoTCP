@@ -63,6 +63,10 @@ namespace AdivinaQuienCliente.Viewmodels
         public string? NombreServidor { get; set; }
         public string? DireccionIP { get; set; } = "127.0.0.1";
         public string? Mensaje { get; set; } = "";
+        public Pokemon? MiPokemon { get; set; }
+
+        public EstadoJuego? Juego { get; set; }
+
 
         private Vista _vistaActual = Vista.UnirseSala;
 
@@ -73,15 +77,29 @@ namespace AdivinaQuienCliente.Viewmodels
         }
 
         public ICommand UnirseSalaCommand { get; set; }
+        public ICommand ElegirPokemonCommand { get; set; }
+
         public ClienteViewmodel()
         {
             dispatcher = Dispatcher.CurrentDispatcher;
             UnirseSalaCommand = new RelayCommand(UnirseSala);
+            ElegirPokemonCommand= new RelayCommand<string> (ElegirPokemon);
 
             service.ClienteAceptado += Service_ClienteAceptado;
             service.ClienteRechazado += Service_ClienteRechazado;
             service.ServerEscogePokemon += Service_ServerEscogePokemon;
-            
+            service.PartidaIniciada += Service_PartidaIniciada;
+
+        }
+
+        private void Service_PartidaIniciada(EstadoJuego obj)
+        {
+            dispatcher.BeginInvoke(() =>
+            {
+                Juego = obj;
+                VistaActual = Vista.Juego;
+                OnPropertyChanged(nameof(Juego));
+            });
         }
 
         private void Service_ServerEscogePokemon()
@@ -129,6 +147,16 @@ namespace AdivinaQuienCliente.Viewmodels
             }
 
             service.Conectar(ip, NombreCliente);
+        }
+
+        public void ElegirPokemon(string? pokemon)
+        {
+            if (pokemon != null)
+            {
+                MiPokemon = Pokemons.Where(x => x.Nombre == pokemon).First();
+                service.SeleccionarPokemonCliente(pokemon);
+                OnPropertyChanged(nameof(MiPokemon));
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

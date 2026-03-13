@@ -7,6 +7,6 @@ namespace AdivinaQuienCliente.Models
     public class Pokemon
     {
         public string Nombre { get; set; } = null!;
-        public string Imagen => $"Resources/Images/{Nombre}.png";
+        public string Imagen => $"/Resources/Images/{Nombre}.png";
     }
 }

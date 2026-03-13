@@ -49,7 +49,7 @@ namespace AdivinaQuienServidor.Services
         bool salaAbierta = false;
 
         public event Action<string>? ClienteConectado; //despues de cliente conectado, servidor debe escoger pokemon
-        public event Action? PartidaIniciada;
+        public event Action<EstadoJuego>? PartidaIniciada;
         public event Action? ClienteDesconectado;
 
 
@@ -207,13 +207,15 @@ namespace AdivinaQuienServidor.Services
                                                 var comandoIniciar = new IniciarPartidaComando
                                                 {
                                                     Comando = Orden.IniciarPartida,
-                                                    NombreRival = JugadorServer.Nombre
+                                                    JugadorTurno= JugadorServer,
+                                                    Ronda=1,
+                                                    Historial = Juego.Historial
                                                 };
 
 
                                                 EnviarComando(comandoIniciar);
 
-                                                PartidaIniciada?.Invoke();
+                                                PartidaIniciada?.Invoke(Juego);
 
                                             }
                                         }

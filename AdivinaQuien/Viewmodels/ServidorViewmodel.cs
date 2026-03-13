@@ -73,22 +73,29 @@ namespace AdivinaQuienServidor.Viewmodels
         public ICommand AbrirSalaCommand { get; set; }
         public ICommand ElegirPokemonCommand { get; set; }
 
+        public EstadoJuego? Juego { get; set; }
+
+
         public ServidorViewmodel()
         {
             hiloUI = Dispatcher.CurrentDispatcher;
             AbrirSalaCommand = new RelayCommand(AbrirSala);
             ElegirPokemonCommand = new RelayCommand<string?>(ElegirPokemon);
             service.ClienteConectado += Service_ClienteConectado;
-            service.PartidaIniciada += Service_PartidaIniciada;
+            service.PartidaIniciada += Service_PartidaIniciada1;
         }
 
-        private void Service_PartidaIniciada()
+        private void Service_PartidaIniciada1(EstadoJuego obj)
         {
             hiloUI.Invoke(() =>
             {
+                Juego = obj;
                 VistaActual = Vista.Juego;
+                OnPropertyChanged(nameof(Juego));
             });
         }
+
+
 
         private void Service_ClienteConectado(string obj)
         {
