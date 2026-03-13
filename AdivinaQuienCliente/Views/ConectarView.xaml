@@ -60,6 +60,8 @@
                              VerticalContentAlignment="Center" 
                              Padding="5,0"
                              Margin="0,0,0,25"/>
+                    
+                    <TextBlock Text="{Binding Mensaje}" FontSize="12" FontWeight="Bold" TextAlignment="Center" Foreground="Red" Margin="0,0,0,10"/>
 
                     <Button Command="{Binding UnirseSalaCommand}" Content="Unirse" 
                             Width="200" Height="45" 

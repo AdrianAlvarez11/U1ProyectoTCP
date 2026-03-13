@@ -68,7 +68,7 @@ namespace AdivinaQuienCliente.Services
                     var unirseCommand = new UnirseSalaComando
                     {
                         Comando = Orden.UnirseSala,
-                        NombreJugador = nombreJugador,
+                        NombreJugador = nombreJugador
                     };
 
                     JugadorCliente = new() { Nombre = nombreJugador };

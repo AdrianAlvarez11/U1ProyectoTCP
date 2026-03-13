@@ -107,7 +107,7 @@ namespace AdivinaQuienCliente.Viewmodels
                 NombreServidor = service.Servidor.Nombre;
                 VistaActual = Vista.EsperandoJugador;
                 OnPropertyChanged(nameof(NombreServidor));
-                Mensaje = $"Espera mientras {NombreServidor} escoje su pokemon";
+                Mensaje = $"Espera mientras {NombreServidor} escoge su pokemon";
                 OnPropertyChanged(nameof(Mensaje));
             });
         }

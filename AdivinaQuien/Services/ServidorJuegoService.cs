@@ -98,8 +98,6 @@ namespace AdivinaQuienServidor.Services
                             Nombre = nombre ?? ""
                         };
 
-                        JugadorCliente = cliente;
-
 
                         if (JugadorServer.Nombre == nombre)
                             {
@@ -116,10 +114,8 @@ namespace AdivinaQuienServidor.Services
                             }
                             else
                             {
-                                
-                                ClienteConectado?.Invoke(JugadorCliente.Nombre);
-
-
+                                JugadorCliente = cliente;
+                            
                                 var bienvenido = new JugadorConectadoComando
                                 {
                                     Comando = Orden.JugadorConectado,
@@ -127,10 +123,11 @@ namespace AdivinaQuienServidor.Services
                                 };
 
                                 EnviarComando(bienvenido);
+                                ClienteConectado?.Invoke(JugadorCliente.Nombre);
 
                                 Thread hiloEscuchar = new Thread(EscucharCliente);
                                 hiloEscuchar.IsBackground = true;
-                                hiloEscuchar.Start(clienteNuevo);
+                                hiloEscuchar.Start();
 
                                 salaAbierta = false;
                                 Servidor.Stop();
@@ -218,7 +215,6 @@ namespace AdivinaQuienServidor.Services
 
                                                 PartidaIniciada?.Invoke();
 
-                                                //falta completar el service de cliente, la navegacion y los viewmodels. cambiar vistas a usercontrols. bu
                                             }
                                         }
                                         break;

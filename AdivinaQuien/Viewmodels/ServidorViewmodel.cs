@@ -68,6 +68,8 @@ namespace AdivinaQuienServidor.Viewmodels
 
         public string Mensaje { get; set; } = "";
 
+        public Pokemon? MiPokemon { get; set; }
+
         public ICommand AbrirSalaCommand { get; set; }
         public ICommand ElegirPokemonCommand { get; set; }
 
@@ -75,6 +77,7 @@ namespace AdivinaQuienServidor.Viewmodels
         {
             hiloUI = Dispatcher.CurrentDispatcher;
             AbrirSalaCommand = new RelayCommand(AbrirSala);
+            ElegirPokemonCommand = new RelayCommand<string?>(ElegirPokemon);
             service.ClienteConectado += Service_ClienteConectado;
             service.PartidaIniciada += Service_PartidaIniciada;
         }
@@ -101,6 +104,18 @@ namespace AdivinaQuienServidor.Viewmodels
             
         }
 
+        public void ElegirPokemon(string? pokemon)
+        {
+            if (pokemon != null)
+            {
+                MiPokemon = Pokemons.Where(x => x.Nombre == pokemon).First();
+                service.PokemonServidorSeleccionado(pokemon);
+                VistaActual = Vista.EsperandoJugador;
+                Mensaje = $"Espera mientras {NombreCliente} escoge su pokemon";
+                OnPropertyChanged(nameof(Mensaje));
+                OnPropertyChanged(nameof(MiPokemon));
+            }
+        }
         private void AbrirSala()
         {
             if(!string.IsNullOrWhiteSpace(NombreServidor) && NombreServidor.Length >= 3)
