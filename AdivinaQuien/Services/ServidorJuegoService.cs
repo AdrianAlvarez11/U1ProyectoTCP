@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 
 namespace AdivinaQuienServidor.Services
 {
@@ -54,7 +55,6 @@ namespace AdivinaQuienServidor.Services
         public event Action? PreguntaEnviada;
         public event Action? RespuestaEnviada;
         public event Action<string>? PreguntaRecibida;
-        public event Action<string>? RespuestaRecibida;
         public event Action<EstadoJuego>? TurnoCambiado;
         public event Action<string>? Gano;
         public event Action<string>? Perdio;
@@ -232,6 +232,11 @@ namespace AdivinaQuienServidor.Services
                                         if (pregunta != null)
                                         {
                                             Juego.Pregunta = pregunta.Pregunta;
+
+                                            Application.Current.Dispatcher.Invoke(() =>
+                                            {
+                                                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {pregunta.Pregunta}");
+                                            });
                                             PreguntaRecibida?.Invoke(pregunta.Pregunta);
                                         }
                                         break;
@@ -240,8 +245,13 @@ namespace AdivinaQuienServidor.Services
                                         var respuesta = JsonSerializer.Deserialize<RespuestaComando>(json);
                                         if (respuesta != null)
                                         {
-                                            Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {respuesta.Respuesta}");
-                                            PreguntaRecibida?.Invoke(respuesta.Respuesta);
+
+                                            Application.Current.Dispatcher.Invoke(() =>
+                                            {
+                                                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {respuesta.Respuesta}");
+                                            });
+                                            //cambiar turno manda respuesta en historial 
+                                            CambiarTurno();
                                         }
                                         break;
 
@@ -263,7 +273,11 @@ namespace AdivinaQuienServidor.Services
                                             else
                                             {
                                                 //no adivina, manda intento de adivinar a cliente y cambia turno
-                                                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre} intentó adivinar: {adivinar.Pokemon} - Incorrecto");
+
+                                                Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre} intentó adivinar: {adivinar.Pokemon} - Incorrecto");
+                                                });
                                                 CambiarTurno();
                                             }
                                         }
@@ -307,7 +321,7 @@ namespace AdivinaQuienServidor.Services
                     Pregunta = pregunta
                 };
                 EnviarComando(comando);
-                PreguntaEnviada?.Invoke(); //pendiente cambiar en el vm
+                PreguntaEnviada?.Invoke(); 
             }
         }
 
@@ -322,7 +336,7 @@ namespace AdivinaQuienServidor.Services
                     Respuesta = respuesta
                 };
                 EnviarComando(comando);
-                RespuestaEnviada?.Invoke(); //pendiente cambiar en el vm
+                RespuestaEnviada?.Invoke(); 
 
                 CambiarTurno();
             }
@@ -338,7 +352,7 @@ namespace AdivinaQuienServidor.Services
                 var comando = new CambiarTurnoComando
                 {
                     Comando = Orden.CambiarTurno,
-                    JugadorTurno = Juego.JugadorTurno,
+                    JugadorTurno = Juego.JugadorTurno.Nombre,
                     Historial = Juego.Historial,
                     Ronda=Juego.Ronda
                 };
@@ -372,7 +386,6 @@ namespace AdivinaQuienServidor.Services
                     Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar: {pokemon} - Incorrecto");
 
                     CambiarTurno(); 
-                    //haz esto tmb en cliente
                 }
             }
         }

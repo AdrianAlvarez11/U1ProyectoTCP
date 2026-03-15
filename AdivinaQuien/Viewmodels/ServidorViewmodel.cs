@@ -72,26 +72,119 @@ namespace AdivinaQuienServidor.Viewmodels
 
         public ICommand AbrirSalaCommand { get; set; }
         public ICommand ElegirPokemonCommand { get; set; }
+        public ICommand EnviarPreguntaCommand { get; set; }
+        public ICommand EnviarRespuestaCommand { get; set; }
 
         public EstadoJuego? Juego { get; set; }
+
+        public bool EsMiTurno => Juego?.JugadorTurno?.Nombre == NombreServidor;
+
+        public bool EsperandoPregunta { get; set; } = false;
+        public bool EsperandoRespuesta { get; set; } = false;
 
 
         public ServidorViewmodel()
         {
             hiloUI = Dispatcher.CurrentDispatcher;
             AbrirSalaCommand = new RelayCommand(AbrirSala);
+            EnviarPreguntaCommand = new RelayCommand(EnviarPregunta);
             ElegirPokemonCommand = new RelayCommand<string?>(ElegirPokemon);
+            EnviarRespuestaCommand = new RelayCommand<string?>(EnviarRespuesta);
             service.ClienteConectado += Service_ClienteConectado;
             service.PartidaIniciada += Service_PartidaIniciada1;
+            service.PreguntaEnviada += Service_PreguntaEnviada;
+            service.PreguntaRecibida += Service_PreguntaRecibida;
+            service.TurnoCambiado += Service_TurnoCambiado;
+        }
+
+        private void Service_PreguntaRecibida(string obj)
+        {
+            hiloUI.BeginInvoke(() =>
+            {
+                Juego.Pregunta = obj;
+                EsperandoPregunta = false;
+                OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(EsperandoPregunta));
+                Mensaje = "Responde sinceramente";
+                OnPropertyChanged(nameof(Mensaje));
+            });
+
+        }
+
+        private void Service_TurnoCambiado(EstadoJuego obj)
+        {
+            hiloUI.BeginInvoke(() =>
+            {
+                Juego = obj;
+                OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(EsMiTurno));
+                if(EsMiTurno)
+                {
+                    Mensaje = "Es tu turno, haz una pregunta";
+                    EsperandoPregunta = false;
+                    EsperandoRespuesta = false;
+                }
+                else
+                {
+                    Mensaje = $"Espera a que {NombreCliente} envíe su pregunta";
+                    EsperandoPregunta = true;
+                    EsperandoRespuesta = false;
+                }
+                OnPropertyChanged(nameof(Mensaje));
+                OnPropertyChanged(nameof(EsperandoPregunta));
+                OnPropertyChanged(nameof(EsperandoRespuesta));
+            });
+        }
+
+        private void EnviarPregunta()
+        {
+            if(string.IsNullOrWhiteSpace(Juego.Pregunta) || Juego.Pregunta.Length<3)
+            {
+                Mensaje = "Escriba una pregunta para enviar";
+                OnPropertyChanged(nameof(Mensaje));
+                return;
+            }
+            
+                service.EnviarPregunta(Juego.Pregunta);
+                EsperandoRespuesta = true;
+                Juego = service.Juego; //para actualizar el historial
+                Mensaje = "Pregunta enviada, espera la respuesta";
+            OnPropertyChanged(nameof(EsperandoRespuesta));
+            OnPropertyChanged(nameof(Juego));
+        }
+
+        private void EnviarRespuesta(string? respuesta)
+        {
+
+            if(respuesta != null)
+            {
+                service.EnviarRespuesta(respuesta);
+                EsperandoRespuesta = false;
+                OnPropertyChanged(nameof(EsperandoRespuesta));
+            }
+            
+        }
+
+        private void Service_PreguntaEnviada()
+        {
+            hiloUI.BeginInvoke(() =>
+            {
+                EsperandoRespuesta = true;
+                Juego = service.Juego;
+                OnPropertyChanged(nameof(EsperandoRespuesta));
+                OnPropertyChanged(nameof(Juego));
+            });
         }
 
         private void Service_PartidaIniciada1(EstadoJuego obj)
         {
-            hiloUI.Invoke(() =>
+            hiloUI.BeginInvoke(() =>
             {
                 Juego = obj;
                 VistaActual = Vista.Juego;
+                Mensaje = "Es tu turno, haz una pregunta";
                 OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(Mensaje));
             });
         }
 
@@ -99,7 +192,7 @@ namespace AdivinaQuienServidor.Viewmodels
 
         private void Service_ClienteConectado(string obj)
         {
-            hiloUI.Invoke(() =>
+            hiloUI.BeginInvoke(() =>
             {
                 NombreCliente = obj;
                 Mensaje = "Se unio el jugador: " + obj;
@@ -129,12 +222,13 @@ namespace AdivinaQuienServidor.Viewmodels
             {
                 service.AbrirSala(NombreServidor);
                 VistaActual= Vista.EsperandoJugador;
+                Mensaje = "";
             }
             else
             {
-                Mensaje = "Escoja un nombre de al menos 3 caracteres";
-                OnPropertyChanged(nameof(Mensaje));
+                Mensaje = "Escoja un nombre de al menos 3 caracteres";   
             }
+            OnPropertyChanged(nameof(Mensaje));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

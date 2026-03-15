@@ -78,18 +78,95 @@ namespace AdivinaQuienCliente.Viewmodels
 
         public ICommand UnirseSalaCommand { get; set; }
         public ICommand ElegirPokemonCommand { get; set; }
+        public ICommand EnviarPreguntaCommand { get; set; }
+        public ICommand EnviarRespuestaCommand { get; set; }
+
+        public bool EsMiTurno => Juego?.JugadorTurno?.Nombre == NombreCliente;
+
+        public bool EsperandoPregunta { get; set; } = false;
+        public bool EsperandoRespuesta { get; set; } = false;
 
         public ClienteViewmodel()
         {
             dispatcher = Dispatcher.CurrentDispatcher;
             UnirseSalaCommand = new RelayCommand(UnirseSala);
             ElegirPokemonCommand= new RelayCommand<string> (ElegirPokemon);
+            EnviarRespuestaCommand = new RelayCommand<string?>(EnviarRespuesta);
+            EnviarPreguntaCommand = new RelayCommand(EnviarPregunta);
+
 
             service.ClienteAceptado += Service_ClienteAceptado;
             service.ClienteRechazado += Service_ClienteRechazado;
             service.ServerEscogePokemon += Service_ServerEscogePokemon;
             service.PartidaIniciada += Service_PartidaIniciada;
+            service.PreguntaRecibida += Service_PreguntaRecibida;
+            service.TurnoCambiado += Service_TurnoCambiado;
 
+        }
+
+        private void Service_TurnoCambiado(EstadoJuego obj)
+        {
+            dispatcher.BeginInvoke(() =>
+            {
+                Juego = obj;
+                OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(EsMiTurno));
+                if (EsMiTurno)
+                {
+                    Mensaje = "Es tu turno, haz una pregunta";
+                    EsperandoPregunta = false;
+                    EsperandoRespuesta = false;
+                }
+                else
+                {
+                    Mensaje = $"Espera a que {NombreServidor} envíe su pregunta";
+                    EsperandoPregunta = true;
+                    EsperandoRespuesta = false;
+                }
+                OnPropertyChanged(nameof(Mensaje));
+                OnPropertyChanged(nameof(EsperandoPregunta));
+                OnPropertyChanged(nameof(EsperandoRespuesta));
+            });
+        }
+
+        private void EnviarPregunta()
+        {
+            if (string.IsNullOrWhiteSpace(Juego.Pregunta) || Juego.Pregunta.Length < 3)
+            {
+                Mensaje = "Escriba una pregunta para enviar";
+                OnPropertyChanged(nameof(Mensaje));
+                return;
+            }
+
+            service.EnviarPregunta(Juego.Pregunta);
+            EsperandoRespuesta = true;
+            Juego = service.Juego; //para actualizar el historial
+            Mensaje = "Pregunta enviada, espera la respuesta";
+            OnPropertyChanged(nameof(EsperandoRespuesta));
+            OnPropertyChanged(nameof(Juego));
+        }
+
+        private void EnviarRespuesta(string? respuesta)
+        {
+            if (respuesta != null)
+            {
+                service.EnviarRespuesta(respuesta);
+                EsperandoRespuesta = false;
+                OnPropertyChanged(nameof(EsperandoRespuesta));
+            }
+        }
+
+        private void Service_PreguntaRecibida(string obj)
+        {
+            dispatcher.BeginInvoke(() =>
+            {
+                Juego.Pregunta = obj;
+                EsperandoPregunta = false;
+                OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(EsperandoPregunta));
+                Mensaje = "Responde sinceramente";
+                OnPropertyChanged(nameof(Mensaje));
+            });
         }
 
         private void Service_PartidaIniciada(EstadoJuego obj)
@@ -98,7 +175,11 @@ namespace AdivinaQuienCliente.Viewmodels
             {
                 Juego = obj;
                 VistaActual = Vista.Juego;
+                EsperandoPregunta = true;
+                Mensaje = $"Espera a que {NombreServidor} envíe su pregunta";
                 OnPropertyChanged(nameof(Juego));
+                OnPropertyChanged(nameof(EsperandoPregunta));
+                OnPropertyChanged(nameof(Mensaje));
             });
         }
 

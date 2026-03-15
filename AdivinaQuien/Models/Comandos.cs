@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace AdivinaQuienServidor.Models
@@ -30,7 +31,7 @@ namespace AdivinaQuienServidor.Models
     {
         public Jugador JugadorTurno { get; set; } = null!;
 
-        public List<string>? Historial { get; set; }
+        public ObservableCollection<string>? Historial { get; set; }
         public int Ronda { get; set; }
     }
 
@@ -56,8 +57,8 @@ namespace AdivinaQuienServidor.Models
 
     public class CambiarTurnoComando : Comandos
     {
-        public Jugador JugadorTurno { get; set; } = null!;
-        public List<string>? Historial { get; set; }
+        public string JugadorTurno { get; set; } = null!;
+        public ObservableCollection<string>? Historial { get; set; }
         public int Ronda { get; set; }
 
     }

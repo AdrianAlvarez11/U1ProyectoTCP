@@ -45,63 +45,43 @@
             </Grid.ColumnDefinitions>
 
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-                <UniformGrid Columns="6" VerticalAlignment="Top">
+<ItemsControl ItemsSource="{Binding Pokemons}" Grid.Row="1" VerticalAlignment="Top">
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="100">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                                <Image Source="/Resources/Images/Greninja.png" Stretch="Uniform"/>
-                            </Border>
-
-                            <TextBlock Grid.Row="1" Text="Greninja" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-
-                            <Button Grid.Row="2" Content="Descartar" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="5"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                        </Grid>
+                    <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
+                        <Image Source="{Binding Imagen}" Stretch="Uniform"/>
                     </Border>
 
-                    <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                                <Image Source="/Resources/Images/Bulbasaur.png" Stretch="Uniform"/>
-                            </Border>
-                            <TextBlock Grid.Row="1" Text="Bulbasaur" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-                            <Button Grid.Row="2" Content="Descartar" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                        </Grid>
-                    </Border>
+                    <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
 
-                    <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                                <Image Source="/Resources/Images/Dragonite.png" Stretch="Uniform"/>
-                            </Border>
-                            <TextBlock Grid.Row="1" Text="Dragonite" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-                            <Button Grid.Row="2" Content="Descartar" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                        </Grid>
-                    </Border>
+                    <Button Grid.Row="2" Content="Descartar" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
 
-                </UniformGrid>
+
+    </ItemsControl.ItemTemplate>
+
+    <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
+        </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+</ItemsControl>
             </ScrollViewer>
 
             <Border Grid.Column="1" Background="White" Margin="10,0,0,0" Padding="12" CornerRadius="12" BorderBrush="#CCC" BorderThickness="1">
@@ -124,33 +104,106 @@
 
 
                     </StackPanel>
-                    
+
                     <Grid Grid.Row="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
 
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="TU PREGUNTA" Foreground="#333" FontSize="11" FontWeight="Bold" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding Juego.Pregunta}" Grid.Row="1" Height="20" Background="#F2F2F2" BorderBrush="#3B4CCA" BorderThickness="1" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,0,10"/>
-                        <Button Grid.Row="2" Content="ENVIAR" Height="25" Background="#3B4CCA" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="8"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
+                        <!--cuando es mi turno, controles de pregunta-->
 
-                        <Button Grid.Row="4" Content="¡ADIVINAR!" Height="25" Background="#FFDE00" Foreground="#3B4CCA" FontWeight="Bold" FontSize="14">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="8"/>
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EsMiTurno}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
-                            </Button.Resources>
-                        </Button>
+                            </Grid.Style>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="TU PREGUNTA" Foreground="#333" FontSize="11" FontWeight="Bold" Margin="0,0,0,5"></TextBlock>
+
+                            <TextBox Grid.Row="1" Text="{Binding Juego.Pregunta}" Height="20" Background="#F2F2F2" BorderBrush="#3B4CCA" BorderThickness="1" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,0,10"></TextBox>
+
+                            <TextBlock Grid.Row="2" Text="{Binding Mensaje}" Foreground="#333" FontSize="11" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
+
+                            <Button Command="{Binding EnviarPreguntaCommand}" Grid.Row="3" Content="ENVIAR" Height="25" Background="#3B4CCA" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8"></Setter>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+                            <Button Grid.Row="4" Content="¡ADIVINAR!" Height="25" Background="#FFDE00" Foreground="#3B4CCA" FontWeight="Bold" FontSize="14">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8"></Setter>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+                        </Grid>
+
+
+                        <!--cuando es turno del otro, controles de respuesta-->
+                        <Grid>
+
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EsMiTurno}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Pregunta:" Foreground="#333" FontSize="11" FontWeight="Bold" Margin="0,0,0,5"></TextBlock>
+
+                            <TextBlock Grid.Row="1" Text="{Binding Juego.Pregunta}" Height="20" Background="#F2F2F2" Padding="5,0" Margin="0,0,0,10"></TextBlock>
+                            <TextBlock Grid.Row="2" Text="{Binding Mensaje}" Foreground="#333" FontSize="11" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
+
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Command="{Binding EnviarRespuestaCommand}" CommandParameter="SI" Content="SI" Height="25" Width="80" Background="#3B4CCA" Foreground="White" FontWeight="Bold" FontSize="14">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"></Setter>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                                <Button Command="{Binding EnviarRespuestaCommand}" CommandParameter="NO" Content="NO" Width="80" Height="25" Background="#FFDE00" Foreground="#3B4CCA" FontWeight="Bold" FontSize="14">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"></Setter>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                            </StackPanel>
+
+                        </Grid>
+
                     </Grid>
+
                 </Grid>
             </Border>
 
