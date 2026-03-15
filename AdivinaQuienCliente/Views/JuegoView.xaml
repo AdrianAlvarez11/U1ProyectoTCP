@@ -26,7 +26,7 @@
                     </TextBlock.Effect>
                 </TextBlock>-->
 
-                <TextBlock Text="Turno:" Foreground="White" FontSize="18" VerticalAlignment="Center"/>
+                <TextBlock Text="Turno: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Juego.JugadorTurno.Nombre}" Foreground="White" FontSize="18" VerticalAlignment="Center"/>
 
                 <Border Background="#CC0000" CornerRadius="15" Padding="15,2" HorizontalAlignment="Right">
@@ -45,43 +45,113 @@
             </Grid.ColumnDefinitions>
 
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-<ItemsControl ItemsSource="{Binding Pokemons}" Grid.Row="1" VerticalAlignment="Top">
-    <ItemsControl.ItemTemplate>
-        <DataTemplate>
-            <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="100">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                        <Image Source="{Binding Imagen}" Stretch="Uniform"/>
-                    </Border>
+                <ItemsControl ItemsSource="{Binding Pokemons}" Grid.Row="1" VerticalAlignment="Top">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="100">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="White"></Setter>
+                                        <Setter Property="Opacity" Value="1"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Habilitado}" Value="False">
+                                                <Setter Property="Background" Value="LightGray"></Setter>
+                                                <Setter Property="Opacity" Value="0.8"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
-                    <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                    <Button Grid.Row="2" Content="Descartar" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
-            </Border>
-        </DataTemplate>
+                                    <Border Grid.Row="0" CornerRadius="8">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#F2F2F2"></Setter>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Habilitado}" Value="False">
+                                                        <Setter Property="Background" Value="LightGray"></Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Image Source="{Binding Imagen}" Stretch="Uniform"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
+
+                                    <Button CommandParameter="{Binding Nombre}" Grid.Row="2" Height="24" FontSize="10" FontWeight="Bold">
+
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#EE1515"></Setter>
+                                                <Setter Property="Foreground" Value="White"></Setter>
+                                                <Setter Property="Content" Value="Descartar"></Setter>
+                                                <Setter Property="Command" Value="{Binding DataContext.DescartarPokemonCommand,
+                                        RelativeSource={RelativeSource AncestorType=Window}}"></Setter>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Habilitado}" Value="False">
+                                                        <Setter Property="Background" Value="DarkGray"></Setter>
+                                                        <Setter Property="Content" Value="Habilitar"></Setter>
+                                                    </DataTrigger>
+
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Habilitado}" Value="True"></Condition>
+                                                            <Condition Binding="{Binding DataContext.Adivinando, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"></Condition>
+                                                        </MultiDataTrigger.Conditions>
+
+                                                        <Setter Property="Background" Value="#FFDE00"></Setter>
+                                                        <Setter Property="Foreground" Value="#3B4CCA"></Setter>
+                                                        <Setter Property="Content" Value="Adivinar"></Setter>
+                                                        <Setter Property="Command" Value="{Binding DataContext.AdivinarCommand, RelativeSource={RelativeSource AncestorType=Window}}"></Setter>
+                                                    </MultiDataTrigger>
+
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Habilitado}" Value="False"></Condition>
+                                                            <Condition Binding="{Binding DataContext.Adivinando, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"></Condition>
+                                                        </MultiDataTrigger.Conditions>
+
+                                                        <Setter Property="Visibility" Value="Hidden"></Setter>
+
+                                                    </MultiDataTrigger>
 
 
-    </ItemsControl.ItemTemplate>
+                                                </Style.Triggers>
 
-    <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
-        </ItemsPanelTemplate>
-    </ItemsControl.ItemsPanel>
-</ItemsControl>
+                                            </Style>
+                                        </Button.Style>
+
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+
+                    </ItemsControl.ItemTemplate>
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+
             </ScrollViewer>
 
             <Border Grid.Column="1" Background="White" Margin="10,0,0,0" Padding="12" CornerRadius="12" BorderBrush="#CCC" BorderThickness="1">
@@ -105,6 +175,9 @@
 
                     </StackPanel>
 
+
+
+
                     <Grid Grid.Row="2">
 
                         <!--cuando es mi turno, controles de pregunta-->
@@ -117,6 +190,7 @@
                                         <DataTrigger Binding="{Binding EsMiTurno}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"></Setter>
                                         </DataTrigger>
+
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
@@ -146,6 +220,10 @@
                                                 <Setter Property="IsEnabled" Value="False"></Setter>
                                                 <Setter Property="Foreground" Value="#3B4CCA"></Setter>
                                             </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Adivinando}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
@@ -156,18 +234,27 @@
                                 </Button.Resources>
                             </Button>
 
-                            <Button Grid.Row="4" Content="¡ADIVINAR!" Height="25" Background="#FFDE00" Foreground="#3B4CCA" FontWeight="Bold" FontSize="14">
+                            <Button Command="{Binding ModoAdivinarCommand}" Grid.Row="4" Height="25" Background="#FFDE00" Foreground="#3B4CCA" FontWeight="Bold" FontSize="14">
+
 
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="IsEnabled" Value="True"></Setter>
+                                        <Setter Property="Content" Value="¡ADIVINAR!"></Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding EsperandoRespuesta}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"></Setter>
                                             </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Adivinando}" Value="True">
+                                                <Setter Property="Content" Value="CANCELAR"></Setter>
+                                            </DataTrigger>
                                         </Style.Triggers>
+
+
                                     </Style>
                                 </Button.Style>
+
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="8"></Setter>
@@ -201,7 +288,22 @@
 
                             <TextBlock Grid.Row="0" Text="Pregunta:" Foreground="#333" FontSize="11" FontWeight="Bold" Margin="0,0,0,5"></TextBlock>
 
-                            <TextBlock Grid.Row="1" Text="{Binding Juego.Pregunta}" Height="20" Background="#F2F2F2" Padding="5,0" Margin="0,0,0,10"></TextBlock>
+                            <TextBlock Grid.Row="1" Text="{Binding Juego.Pregunta}" Height="20" Padding="5,0" Margin="0,0,0,10">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="#F2F2F2"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding EsperandoRespuesta}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Adivinando}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+
+                            </TextBlock>
                             <TextBlock Grid.Row="2" Text="{Binding Mensaje}" Foreground="#333" FontSize="11" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
 
                             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -211,12 +313,10 @@
                                         <Style TargetType="Button">
                                             <Setter Property="IsEnabled" Value="True"></Setter>
                                             <Setter Property="Foreground" Value="White"></Setter>
-
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding EsperandoPregunta}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"></Setter>
                                                     <Setter Property="Foreground" Value="#3B4CCA"></Setter>
-                                                    
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

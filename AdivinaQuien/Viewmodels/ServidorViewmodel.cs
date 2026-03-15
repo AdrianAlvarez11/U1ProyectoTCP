@@ -25,30 +25,30 @@ namespace AdivinaQuienServidor.Viewmodels
     {
         public ObservableCollection<Pokemon> Pokemons { get; set; } = new ObservableCollection<Pokemon>()
         {
-            new Pokemon { Nombre = "Alakazam" },
-            new Pokemon { Nombre = "Blaziken" },
-            new Pokemon { Nombre = "Bulbasaur" },
-            new Pokemon { Nombre = "Charizard" },
-            new Pokemon { Nombre = "Ditto" },
-            new Pokemon { Nombre = "Dragonite" },
-            new Pokemon { Nombre = "Eevee" },
-            new Pokemon { Nombre = "Gardevoir" },
-            new Pokemon { Nombre = "Gengar" },
-            new Pokemon { Nombre = "Greninja" },
-            new Pokemon { Nombre = "Groudon" },
-            new Pokemon { Nombre = "Gyarados" },
-            new Pokemon { Nombre = "Jigglypuff" },
-            new Pokemon { Nombre = "Lapras" },
-            new Pokemon { Nombre = "Lucario" },
-            new Pokemon { Nombre = "Machamp" },
-            new Pokemon { Nombre = "Meowth" },
-            new Pokemon { Nombre = "Mewtwo" },
-            new Pokemon { Nombre = "Onix" },
-            new Pokemon { Nombre = "Pikachu" },
-            new Pokemon { Nombre = "Rayquaza" },
-            new Pokemon { Nombre = "Snorlax" },
-            new Pokemon { Nombre = "Squirtle" },
-            new Pokemon { Nombre = "Umbreon" }
+            new Pokemon { Nombre = "Alakazam", Habilitado = true },
+            new Pokemon { Nombre = "Blaziken", Habilitado = true },
+            new Pokemon { Nombre = "Bulbasaur", Habilitado = true },
+            new Pokemon { Nombre = "Charizard", Habilitado = true },
+            new Pokemon { Nombre = "Ditto", Habilitado = true },
+            new Pokemon { Nombre = "Dragonite", Habilitado = true },
+            new Pokemon { Nombre = "Eevee", Habilitado = true },
+            new Pokemon { Nombre = "Gardevoir", Habilitado = true },
+            new Pokemon { Nombre = "Gengar", Habilitado = true },
+            new Pokemon { Nombre = "Greninja", Habilitado = true },
+            new Pokemon { Nombre = "Groudon", Habilitado = true },
+            new Pokemon { Nombre = "Gyarados", Habilitado = true },
+            new Pokemon { Nombre = "Jigglypuff", Habilitado = true },
+            new Pokemon { Nombre = "Lapras", Habilitado = true },
+            new Pokemon { Nombre = "Lucario", Habilitado = true },
+            new Pokemon { Nombre = "Machamp", Habilitado = true },
+            new Pokemon { Nombre = "Meowth", Habilitado = true },
+            new Pokemon { Nombre = "Mewtwo", Habilitado = true },
+            new Pokemon { Nombre = "Onix", Habilitado = true },
+            new Pokemon { Nombre = "Pikachu", Habilitado = true },
+            new Pokemon { Nombre = "Rayquaza", Habilitado = true },
+            new Pokemon { Nombre = "Snorlax", Habilitado = true },
+            new Pokemon { Nombre = "Squirtle", Habilitado = true },
+            new Pokemon { Nombre = "Umbreon", Habilitado = true }
         };
 
         Dispatcher hiloUI;
@@ -74,6 +74,9 @@ namespace AdivinaQuienServidor.Viewmodels
         public ICommand ElegirPokemonCommand { get; set; }
         public ICommand EnviarPreguntaCommand { get; set; }
         public ICommand EnviarRespuestaCommand { get; set; }
+        public ICommand DescartarPokemonCommand { get; set; }
+        public ICommand ModoAdivinarCommand { get; set; }
+        public ICommand AdivinarCommand { get; set; }
 
         public EstadoJuego? Juego { get; set; }
 
@@ -81,6 +84,8 @@ namespace AdivinaQuienServidor.Viewmodels
 
         public bool EsperandoPregunta { get; set; } = false;
         public bool EsperandoRespuesta { get; set; } = false;
+
+        public bool Adivinando {  get; set; } = false;
 
 
         public ServidorViewmodel()
@@ -90,11 +95,48 @@ namespace AdivinaQuienServidor.Viewmodels
             EnviarPreguntaCommand = new RelayCommand(EnviarPregunta);
             ElegirPokemonCommand = new RelayCommand<string?>(ElegirPokemon);
             EnviarRespuestaCommand = new RelayCommand<string?>(EnviarRespuesta);
+            DescartarPokemonCommand = new RelayCommand<string?>(DescartarPokemon);
+            ModoAdivinarCommand = new RelayCommand(EntrarAdivinando);
+            AdivinarCommand = new RelayCommand<string?>(Adivinar);
+
+
             service.ClienteConectado += Service_ClienteConectado;
             service.PartidaIniciada += Service_PartidaIniciada1;
             service.PreguntaEnviada += Service_PreguntaEnviada;
             service.PreguntaRecibida += Service_PreguntaRecibida;
             service.TurnoCambiado += Service_TurnoCambiado;
+        }
+
+        private void Adivinar(string? pokemon)
+        {
+            if (pokemon != null)
+            {
+                service.AdivinarPokemon(pokemon);
+
+            }
+        }
+
+        private void EntrarAdivinando()
+        {
+            Adivinando = !Adivinando;
+                if(Adivinando)
+                {
+                    Mensaje = "Estas en modo adivinar, haz click en el pokemon que crees que es el del oponente";
+                }
+                else
+                {
+                    Mensaje = "Es tu turno, haz una pregunta";
+                }
+
+            OnPropertyChanged(nameof(Adivinando));
+            OnPropertyChanged(nameof(Mensaje));
+        }
+
+        private void DescartarPokemon(string? pokemon)
+        {
+            var pokemonlista = Pokemons.Where(x => x.Nombre == pokemon).First();
+            pokemonlista.Habilitado = !pokemonlista.Habilitado;
+            OnPropertyChanged(nameof(Pokemons));
         }
 
         private void Service_PreguntaRecibida(string obj)
