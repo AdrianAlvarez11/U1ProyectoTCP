@@ -77,6 +77,7 @@ namespace AdivinaQuienServidor.Viewmodels
         public ICommand DescartarPokemonCommand { get; set; }
         public ICommand ModoAdivinarCommand { get; set; }
         public ICommand AdivinarCommand { get; set; }
+        public ICommand VolverAJugarCommand { get; set; }
 
         public EstadoJuego? Juego { get; set; }
 
@@ -86,6 +87,8 @@ namespace AdivinaQuienServidor.Viewmodels
         public bool EsperandoRespuesta { get; set; } = false;
 
         public bool Adivinando {  get; set; } = false;
+
+        public Pokemon? PokemonRival {  get; set; }
 
 
         public ServidorViewmodel()
@@ -98,6 +101,7 @@ namespace AdivinaQuienServidor.Viewmodels
             DescartarPokemonCommand = new RelayCommand<string?>(DescartarPokemon);
             ModoAdivinarCommand = new RelayCommand(EntrarAdivinando);
             AdivinarCommand = new RelayCommand<string?>(Adivinar);
+            VolverAJugarCommand = new RelayCommand(VolverAJugar);
 
 
             service.ClienteConectado += Service_ClienteConectado;
@@ -105,6 +109,36 @@ namespace AdivinaQuienServidor.Viewmodels
             service.PreguntaEnviada += Service_PreguntaEnviada;
             service.PreguntaRecibida += Service_PreguntaRecibida;
             service.TurnoCambiado += Service_TurnoCambiado;
+            service.Gano += Service_Gano;
+            service.Perdio += Service_Perdio;
+        }
+
+        private void VolverAJugar()
+        {
+            service.VolverAJugar();
+            Juego = null;
+            PokemonRival = null;
+            Mensaje = "";
+        }
+
+        private void Service_Perdio(string pokemonRival)
+        {
+            var pokemon = Pokemons.Where(x => x.Nombre == pokemonRival).First();
+            Mensaje = $"¡Perdiste!";
+            PokemonRival = pokemon;
+            VistaActual = Vista.Resultados;
+            OnPropertyChanged(nameof(PokemonRival));
+            OnPropertyChanged(nameof(Mensaje));
+        }
+
+        private void Service_Gano(string pokemonRival)
+        {
+           var pokemon = Pokemons.Where(x => x.Nombre == pokemonRival).First();
+            PokemonRival = pokemon;
+            VistaActual = Vista.Resultados;
+            Mensaje = $"¡Felicidades! Ganaste";
+            OnPropertyChanged(nameof(PokemonRival));
+            OnPropertyChanged(nameof(Mensaje));
         }
 
         private void Adivinar(string? pokemon)
@@ -112,6 +146,8 @@ namespace AdivinaQuienServidor.Viewmodels
             if (pokemon != null)
             {
                 service.AdivinarPokemon(pokemon);
+                Adivinando = false;
+                OnPropertyChanged(nameof(Adivinando));
 
             }
         }
@@ -239,6 +275,7 @@ namespace AdivinaQuienServidor.Viewmodels
                 NombreCliente = obj;
                 Mensaje = "Se unio el jugador: " + obj;
                 VistaActual = Vista.ElegirPersonaje;
+                Pokemons.ToList().ForEach(x => x.Habilitado = true);
 
                 OnPropertyChanged(nameof(Mensaje));
             });

@@ -148,6 +148,27 @@ namespace AdivinaQuienServidor.Services
             }
         }
 
+        public void VolverAJugar() 
+        {
+            Juego = new();
+             if (JugadorServer != null)
+             {
+                JugadorServer.Pokemon = null;
+             }
+             if (JugadorCliente != null)
+             {
+                JugadorCliente.Pokemon = null;
+             }
+
+            var bienvenido = new JugadorConectadoComando
+            {
+                Comando = Orden.JugadorConectado,
+                NombreServidor = JugadorServer.Nombre
+            };
+
+            EnviarComando(bienvenido);
+            ClienteConectado?.Invoke(JugadorCliente.Nombre);
+        }
         public void PokemonServidorSeleccionado(string pokemon)
         {
             if (!PokemonValidos.Contains(pokemon))

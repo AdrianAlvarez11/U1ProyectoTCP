@@ -89,6 +89,7 @@ namespace AdivinaQuienCliente.Viewmodels
         public bool EsperandoPregunta { get; set; } = false;
         public bool EsperandoRespuesta { get; set; } = false;
         public bool Adivinando { get; set; } = false;
+        public Pokemon? PokemonRival { get; set; }
 
         public ClienteViewmodel()
         {
@@ -108,12 +109,39 @@ namespace AdivinaQuienCliente.Viewmodels
             service.PartidaIniciada += Service_PartidaIniciada;
             service.PreguntaRecibida += Service_PreguntaRecibida;
             service.TurnoCambiado += Service_TurnoCambiado;
+            service.Gano += Service_Gano;
+            service.Perdio += Service_Perdio;
 
         }
 
-        private void Adivinar(string? obj)
+        private void Service_Perdio(string pokemonRival)
         {
-            throw new NotImplementedException();
+            var pokemon = Pokemons.Where(x => x.Nombre == pokemonRival).First();
+            Mensaje = $"¡Perdiste!";
+            PokemonRival = pokemon;
+            VistaActual = Vista.Resultados;
+            OnPropertyChanged(nameof(PokemonRival));
+            OnPropertyChanged(nameof(Mensaje));
+        }
+
+        private void Service_Gano(string pokemonRival)
+        {
+            var pokemon = Pokemons.Where(x => x.Nombre == pokemonRival).First();
+            PokemonRival = pokemon;
+            VistaActual = Vista.Resultados;
+            Mensaje = $"¡Felicidades! Ganaste";
+            OnPropertyChanged(nameof(PokemonRival));
+            OnPropertyChanged(nameof(Mensaje));
+        }
+
+        private void Adivinar(string? pokemon)
+        {
+            if (pokemon != null)
+            {
+                service.AdivinarPokemon(pokemon);
+                Adivinando = false;
+                OnPropertyChanged(nameof(Adivinando));
+            }
         }
 
         private void DescartarPokemon(string? pokemon)
@@ -238,6 +266,7 @@ namespace AdivinaQuienCliente.Viewmodels
             {
                 NombreServidor = service.Servidor.Nombre;
                 VistaActual = Vista.EsperandoJugador;
+                Pokemons.ToList().ForEach(x => x.Habilitado = true);
                 OnPropertyChanged(nameof(NombreServidor));
                 Mensaje = $"Espera mientras {NombreServidor} escoge su pokemon";
                 OnPropertyChanged(nameof(Mensaje));

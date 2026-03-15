@@ -265,6 +265,7 @@ namespace AdivinaQuienCliente.Services
                     Comando = Orden.Adivinar,
                     Pokemon = pokemon
                 };
+                EnviarComando(comando);
 
 
             }
