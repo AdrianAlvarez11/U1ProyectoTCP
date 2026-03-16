@@ -55,6 +55,8 @@ namespace AdivinaQuienCliente.Services
         public event Action<EstadoJuego>? TurnoCambiado;
         public event Action<string>? Gano;
         public event Action<string>? Perdio;
+        public event Action? ServidorDesconectado;
+        public event Action? ConexionFallida;
 
 
         public EstadoJuego? Juego { get; set; }
@@ -69,27 +71,35 @@ namespace AdivinaQuienCliente.Services
 
             if(Servidor.Conexion == null)
             {
-                Servidor.Conexion = new();
-                IPEndPoint endpoint = new IPEndPoint(serverIP, puertoRemoto);
-
-                Servidor.Conexion.Connect(endpoint);
-
-                if (Servidor.Conexion.Connected)
+                try
                 {
-                    var unirseCommand = new UnirseSalaComando
+                    Servidor.Conexion = new();
+                    IPEndPoint endpoint = new IPEndPoint(serverIP, puertoRemoto);
+
+                    Servidor.Conexion.Connect(endpoint);
+
+                    if (Servidor.Conexion.Connected)
                     {
-                        Comando = Orden.UnirseSala,
-                        NombreJugador = nombreJugador
-                    };
+                        var unirseCommand = new UnirseSalaComando
+                        {
+                            Comando = Orden.UnirseSala,
+                            NombreJugador = nombreJugador
+                        };
 
-                    JugadorCliente = new() { Nombre = nombreJugador };
+                        JugadorCliente = new() { Nombre = nombreJugador };
 
-                    Thread hiloRecibir = new Thread(RecibirMensaje);
-                    hiloRecibir.IsBackground = true;
-                    hiloRecibir.Start();
+                        Thread hiloRecibir = new Thread(RecibirMensaje);
+                        hiloRecibir.IsBackground = true;
+                        hiloRecibir.Start();
 
-                    EnviarComando(unirseCommand);
+                        EnviarComando(unirseCommand);
+                    }
                 }
+                catch 
+                {
+                    ConexionFallida?.Invoke();
+                }
+
 
             }
         }
@@ -221,6 +231,17 @@ namespace AdivinaQuienCliente.Services
             catch
             {
 
+            }
+            finally
+            {
+                if (Servidor.Conexion != null)
+                {
+                    Juego = null;
+                    Servidor = null;
+                    JugadorCliente = null;
+                    ServidorDesconectado?.Invoke();
+
+                }
             }
         }
 

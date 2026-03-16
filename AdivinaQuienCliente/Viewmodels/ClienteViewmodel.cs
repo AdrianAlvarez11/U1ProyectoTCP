@@ -83,6 +83,8 @@ namespace AdivinaQuienCliente.Viewmodels
         public ICommand DescartarPokemonCommand { get; set; }
         public ICommand ModoAdivinarCommand { get; set; }
         public ICommand AdivinarCommand { get; set; }
+        public ICommand VolverInicioCommand { get; set; }
+
 
         public bool EsMiTurno => Juego?.JugadorTurno?.Nombre == NombreCliente;
 
@@ -101,6 +103,7 @@ namespace AdivinaQuienCliente.Viewmodels
             DescartarPokemonCommand = new RelayCommand<string?>(DescartarPokemon);
             ModoAdivinarCommand = new RelayCommand(EntrarAdivinando);
             AdivinarCommand = new RelayCommand<string?>(Adivinar);
+            VolverInicioCommand = new RelayCommand(VolverInicio);
 
 
             service.ClienteAceptado += Service_ClienteAceptado;
@@ -111,7 +114,29 @@ namespace AdivinaQuienCliente.Viewmodels
             service.TurnoCambiado += Service_TurnoCambiado;
             service.Gano += Service_Gano;
             service.Perdio += Service_Perdio;
+            service.ServidorDesconectado += Service_ServidorDesconectado;
+            service.ConexionFallida += Service_ConexionFallida;
 
+        }
+
+        private void Service_ConexionFallida()
+        {
+            Mensaje = "No se encontró una sala abierta con esa dirección IP";
+            OnPropertyChanged(nameof(Mensaje));
+        }
+
+        private void VolverInicio()
+        {
+            VistaActual = Vista.UnirseSala;
+            Juego = null;
+            PokemonRival = null;
+            Mensaje = "";
+            NombreCliente = null;
+        }
+
+        private void Service_ServidorDesconectado()
+        {
+            VistaActual = Vista.JugadorDesconectado;
         }
 
         private void Service_Perdio(string pokemonRival)

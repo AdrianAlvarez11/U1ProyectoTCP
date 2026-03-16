@@ -78,6 +78,8 @@ namespace AdivinaQuienServidor.Viewmodels
         public ICommand ModoAdivinarCommand { get; set; }
         public ICommand AdivinarCommand { get; set; }
         public ICommand VolverAJugarCommand { get; set; }
+        public ICommand VolverInicioCommand { get; set; }
+
 
         public EstadoJuego? Juego { get; set; }
 
@@ -102,6 +104,7 @@ namespace AdivinaQuienServidor.Viewmodels
             ModoAdivinarCommand = new RelayCommand(EntrarAdivinando);
             AdivinarCommand = new RelayCommand<string?>(Adivinar);
             VolverAJugarCommand = new RelayCommand(VolverAJugar);
+            VolverInicioCommand = new RelayCommand(VolverInicio);
 
 
             service.ClienteConectado += Service_ClienteConectado;
@@ -111,6 +114,23 @@ namespace AdivinaQuienServidor.Viewmodels
             service.TurnoCambiado += Service_TurnoCambiado;
             service.Gano += Service_Gano;
             service.Perdio += Service_Perdio;
+            service.ClienteDesconectado += Service_ClienteDesconectado;
+        }
+
+        private void Service_ClienteDesconectado()
+        {
+            VistaActual = Vista.JugadorDesconectado;
+        }
+
+        private void VolverInicio()
+        {
+            VistaActual= Vista.AbrirSala;
+            Juego = null;
+            PokemonRival = null;
+            Mensaje = "";
+            NombreCliente = null;
+
+
         }
 
         private void VolverAJugar()
