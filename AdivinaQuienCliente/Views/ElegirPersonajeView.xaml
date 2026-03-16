@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienCliente.Views"
         mc:Ignorable="d"
-        Height="500" Width="850">
-   
+        >
+    
 
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
@@ -51,7 +51,7 @@
             <ItemsControl ItemsSource="{Binding Pokemons}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                        <UniformGrid Columns="6" HorizontalAlignment="Center"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 

@@ -5,51 +5,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienServidor.Views"
         mc:Ignorable="d"
-        Height="500" Width="850">
+        >
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
-             Stretch="UniformToFill" 
-             Opacity="0.15"/>
+                    Stretch="UniformToFill" 
+                    Opacity="0.15"/>
     </UserControl.Background>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height=".3*"/>
-            <RowDefinition Height=".7*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#EE1515" Height="90" VerticalAlignment="Top"/>
+        <Border Grid.Row="0" Background="#EE1515" Height="100" VerticalAlignment="Top"/>
 
-        <StackPanel Grid.Row="0">
-            <Label Content="ADIVINA QUIÉN" 
-            HorizontalAlignment="Center" 
-            FontFamily="Bernard MT Condensed" 
-            FontSize="40" 
-            Foreground="White" 
-            FontWeight="Bold">
+        <StackPanel Grid.Row="0" Margin="0,15,0,15">
+            <Label Content="ADIVINA QUIÉN" HorizontalAlignment="Center" FontFamily="Bernard MT Condensed" FontSize="40" Foreground="White" FontWeight="Bold">
                 <Label.Effect>
                     <DropShadowEffect Color="#3B4CCA" BlurRadius="2" ShadowDepth="4" Direction="320"/>
                 </Label.Effect>
             </Label>
-
-            <Label Content="Pokémon" 
-            HorizontalAlignment="Center" 
-            FontSize="16" 
-            Foreground="#FFDE00" 
-            FontWeight="Bold">
+            <Label Content="Pokémon" HorizontalAlignment="Center" FontSize="16" Foreground="#FFDE00" FontWeight="Bold">
                 <Label.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="1" ShadowDepth="2"/>
                 </Label.Effect>
             </Label>
-
             <Label Content="Elige a tu Pokemon" Foreground="White" FontSize="30" HorizontalAlignment="Center" FontFamily="Bernard MT Condensed" FontWeight="Bold" />
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <ItemsControl ItemsSource="{Binding Pokemons}">
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      HorizontalAlignment="Stretch">
+
+            <ItemsControl ItemsSource="{Binding Pokemons}" HorizontalAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                        <UniformGrid Columns="6" HorizontalAlignment="Center"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -70,8 +63,8 @@
                                 <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
 
                                 <Button Command="{Binding DataContext.ElegirPokemonCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                 CommandParameter="{Binding Nombre}" 
-                                 Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
+                                        CommandParameter="{Binding Nombre}" 
+                                        Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="5"/>
