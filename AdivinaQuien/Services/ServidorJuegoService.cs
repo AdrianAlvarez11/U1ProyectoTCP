@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 
 namespace AdivinaQuienServidor.Services
 {
@@ -51,7 +52,12 @@ namespace AdivinaQuienServidor.Services
         public event Action<string>? ClienteConectado; //despues de cliente conectado, servidor debe escoger pokemon
         public event Action<EstadoJuego>? PartidaIniciada;
         public event Action? ClienteDesconectado;
-
+        public event Action? PreguntaEnviada;
+        public event Action? RespuestaEnviada;
+        public event Action<string>? PreguntaRecibida;
+        public event Action<EstadoJuego>? TurnoCambiado;
+        public event Action<string>? Gano;
+        public event Action<string>? Perdio;
 
         public void AbrirSala(string nombre)
         {
@@ -142,6 +148,27 @@ namespace AdivinaQuienServidor.Services
             }
         }
 
+        public void VolverAJugar() 
+        {
+            Juego = new();
+             if (JugadorServer != null)
+             {
+                JugadorServer.Pokemon = null;
+             }
+             if (JugadorCliente != null)
+             {
+                JugadorCliente.Pokemon = null;
+             }
+
+            var bienvenido = new JugadorConectadoComando
+            {
+                Comando = Orden.JugadorConectado,
+                NombreServidor = JugadorServer.Nombre
+            };
+
+            EnviarComando(bienvenido);
+            ClienteConectado?.Invoke(JugadorCliente.Nombre);
+        }
         public void PokemonServidorSeleccionado(string pokemon)
         {
             if (!PokemonValidos.Contains(pokemon))
@@ -221,6 +248,61 @@ namespace AdivinaQuienServidor.Services
                                         }
                                         break;
 
+                                    case Orden.Pregunta:
+                                        var pregunta = JsonSerializer.Deserialize<PreguntaComando>(json);
+                                        if (pregunta != null)
+                                        {
+                                            Juego.Pregunta = pregunta.Pregunta;
+
+                                            Application.Current.Dispatcher.Invoke(() =>
+                                            {
+                                                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {pregunta.Pregunta}");
+                                            });
+                                            PreguntaRecibida?.Invoke(pregunta.Pregunta);
+                                        }
+                                        break;
+
+                                    case Orden.Respuesta:
+                                        var respuesta = JsonSerializer.Deserialize<RespuestaComando>(json);
+                                        if (respuesta != null)
+                                        {
+
+                                            Application.Current.Dispatcher.Invoke(() =>
+                                            {
+                                                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {respuesta.Respuesta}");
+                                            });
+                                            //cambiar turno manda respuesta en historial 
+                                            CambiarTurno();
+                                        }
+                                        break;
+
+                                        case Orden.Adivinar:
+                                            var adivinar = JsonSerializer.Deserialize<AdivinarComando>(json);
+                                        if (adivinar != null)
+                                        {
+                                            if (adivinar.Pokemon == JugadorServer.Pokemon)
+                                            {
+                                                //gana el cliente, manda ganar
+                                                var comandoGanar = new GanarComando
+                                                {
+                                                    Comando = Orden.Ganar,
+                                                    PokemonRival = JugadorServer.Pokemon
+                                                };
+                                                EnviarComando(comandoGanar);
+                                                Perdio?.Invoke(JugadorCliente.Pokemon);
+                                            }
+                                            else
+                                            {
+                                                //no adivina, manda intento de adivinar a cliente y cambia turno
+
+                                                Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre} intentó adivinar: {adivinar.Pokemon} - Incorrecto");
+                                                });
+                                                CambiarTurno();
+                                            }
+                                        }
+                                        break;
 
                                     default: break;
                                 }
@@ -248,7 +330,86 @@ namespace AdivinaQuienServidor.Services
             }
         }
 
+        public void EnviarPregunta(string pregunta)
+        {
+            if (JugadorCliente != null && JugadorCliente.Conexion != null)
+            {
+                Juego.Pregunta = pregunta;
+                Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre}: {pregunta}");
+                var comando = new PreguntaComando
+                {
+                    Comando = Orden.Pregunta,
+                    Pregunta = pregunta
+                };
+                EnviarComando(comando);
+                PreguntaEnviada?.Invoke(); 
+            }
+        }
 
+        public void EnviarRespuesta(string respuesta)
+        {
+            if (JugadorCliente != null && JugadorCliente.Conexion != null)
+            {
+                Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre}: {respuesta}");
+                var comando = new RespuestaComando
+                {
+                    Comando = Orden.Respuesta,
+                    Respuesta = respuesta
+                };
+                EnviarComando(comando);
+                RespuestaEnviada?.Invoke(); 
+
+                CambiarTurno();
+            }
+        }
+
+        public void CambiarTurno()
+        {
+            if (JugadorServer != null && JugadorCliente != null)
+            {
+                Juego.JugadorTurno = Juego.JugadorTurno == JugadorServer ? JugadorCliente : JugadorServer;
+                Juego.Ronda++;
+                Juego.Pregunta = null;
+                var comando = new CambiarTurnoComando
+                {
+                    Comando = Orden.CambiarTurno,
+                    JugadorTurno = Juego.JugadorTurno.Nombre,
+                    Historial = Juego.Historial,
+                    Ronda=Juego.Ronda
+                };
+                EnviarComando(comando);
+                TurnoCambiado?.Invoke(Juego);
+            }
+        }
+
+        public void AdivinarPokemon(string pokemon)
+        {
+            if (JugadorCliente != null && JugadorCliente.Conexion != null)
+            {
+                if (!PokemonValidos.Contains(pokemon))
+                    return;
+
+                if(JugadorCliente.Pokemon != null && pokemon == JugadorCliente.Pokemon)
+                {
+                    //gana el servidor, manda perder a cliente
+                    var comandoPerder = new PerderComando
+                    {
+                        Comando = Orden.Perder,
+                        PokemonRival = JugadorServer.Pokemon
+                    };
+                    EnviarComando(comandoPerder);
+
+                    Gano?.Invoke(pokemon);
+                }
+                else
+                {
+                    //no adivina, manda intento de adivinar a cliente y cambia turno
+                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar: {pokemon} - Incorrecto");
+
+                    CambiarTurno(); 
+                }
+            }
+        }
         private void EnviarComando(object comando)
         {
             if (JugadorCliente != null && JugadorCliente.Conexion != null)
@@ -259,8 +420,7 @@ namespace AdivinaQuienServidor.Services
                 var buffer = Encoding.UTF8.GetBytes(json);
 
                 stream.Write(buffer, 0, buffer.Length);
-            }
-                
+            }            
         }
 
 

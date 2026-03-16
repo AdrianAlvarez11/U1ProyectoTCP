@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace AdivinaQuienServidor.Models
@@ -10,7 +11,7 @@ namespace AdivinaQuienServidor.Models
         public Jugador? JugadorTurno { get; set; } 
         public int Ronda { get; set; }
         public string? Pregunta { get; set; }
-        public List<string> Historial { get; set; } = new();
+        public ObservableCollection<string> Historial { get; set; } = new();
 
 
     }

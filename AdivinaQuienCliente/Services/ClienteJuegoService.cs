@@ -48,6 +48,19 @@ namespace AdivinaQuienCliente.Services
         public event Action? ClienteRechazado;
         public event Action? ServerEscogePokemon;
         public event Action<EstadoJuego>? PartidaIniciada;
+        public event Action<string>? PreguntaRecibida;
+        public event Action<string>? RespuestaRecibida;
+        public event Action? PreguntaEnviada;
+        public event Action? RespuestaEnviada;
+        public event Action<EstadoJuego>? TurnoCambiado;
+        public event Action<string>? Gano;
+        public event Action<string>? Perdio;
+        public event Action? ServidorDesconectado;
+        public event Action? ConexionFallida;
+
+
+        public EstadoJuego? Juego { get; set; }
+
 
         public void Conectar(IPAddress serverIP, string nombreJugador)
         {
@@ -58,27 +71,35 @@ namespace AdivinaQuienCliente.Services
 
             if(Servidor.Conexion == null)
             {
-                Servidor.Conexion = new();
-                IPEndPoint endpoint = new IPEndPoint(serverIP, puertoRemoto);
-
-                Servidor.Conexion.Connect(endpoint);
-
-                if (Servidor.Conexion.Connected)
+                try
                 {
-                    var unirseCommand = new UnirseSalaComando
+                    Servidor.Conexion = new();
+                    IPEndPoint endpoint = new IPEndPoint(serverIP, puertoRemoto);
+
+                    Servidor.Conexion.Connect(endpoint);
+
+                    if (Servidor.Conexion.Connected)
                     {
-                        Comando = Orden.UnirseSala,
-                        NombreJugador = nombreJugador
-                    };
+                        var unirseCommand = new UnirseSalaComando
+                        {
+                            Comando = Orden.UnirseSala,
+                            NombreJugador = nombreJugador
+                        };
 
-                    JugadorCliente = new() { Nombre = nombreJugador };
+                        JugadorCliente = new() { Nombre = nombreJugador };
 
-                    Thread hiloRecibir = new Thread(RecibirMensaje);
-                    hiloRecibir.IsBackground = true;
-                    hiloRecibir.Start();
+                        Thread hiloRecibir = new Thread(RecibirMensaje);
+                        hiloRecibir.IsBackground = true;
+                        hiloRecibir.Start();
 
-                    EnviarComando(unirseCommand);
+                        EnviarComando(unirseCommand);
+                    }
                 }
+                catch 
+                {
+                    ConexionFallida?.Invoke();
+                }
+
 
             }
         }
@@ -141,18 +162,63 @@ namespace AdivinaQuienCliente.Services
                                             var iniciar = JsonSerializer.Deserialize<IniciarPartidaComando>(json);
                                             if(iniciar != null)
                                             {
-                                            EstadoJuego juego = new()
+                                            Juego = new()
                                             {
-                                                Historial = iniciar.Historial ?? new List<string>(),
+                                                Historial = iniciar.Historial ?? new(),
                                                 JugadorTurno = iniciar.JugadorTurno,
                                                 Ronda = iniciar.Ronda
 
                                             };
-                                            PartidaIniciada?.Invoke(juego);
+                                            PartidaIniciada?.Invoke(Juego);
                                         }
 
                                             break;
 
+                                    case Orden.Pregunta:
+                                        var pregunta = JsonSerializer.Deserialize<PreguntaComando>(json);
+                                        if(pregunta != null)
+                                        {
+                                            Juego.Pregunta = pregunta.Pregunta;
+                                            PreguntaRecibida?.Invoke(pregunta.Pregunta);
+                                        }
+                                        break;
+
+                                    //case Orden.Respuesta:
+                                    //    var respuesta = JsonSerializer.Deserialize<RespuestaComando>(json);
+                                    //    if (respuesta != null)
+                                    //    {
+                                    //        Juego.Historial.Add($"{Juego.Ronda}. {Servidor.Nombre}: {respuesta.Respuesta}");
+                                    //        RespuestaRecibida?.Invoke(respuesta.Respuesta);
+                                    //    }
+                                    //    break;
+
+                                    case Orden.CambiarTurno:
+                                        var cambio = JsonSerializer.Deserialize<CambiarTurnoComando>(json);
+                                        if(cambio != null)
+                                        {
+                                            Juego.JugadorTurno = JugadorCliente.Nombre == cambio.JugadorTurno? JugadorCliente : Servidor;
+                                            Juego.Ronda = cambio.Ronda;
+                                            Juego.Historial = cambio.Historial ?? new();
+                                            Juego.Pregunta = null;
+                                            TurnoCambiado?.Invoke(Juego);
+                                        }
+                                        break;
+
+                                    case Orden.Ganar:
+                                        var ganar = JsonSerializer.Deserialize<GanarComando>(json);
+                                        if(ganar != null)
+                                        {
+                                            Gano?.Invoke(ganar.PokemonRival);
+                                        }
+                                        break;
+
+                                    case Orden.Perder:
+                                        var perder = JsonSerializer.Deserialize<PerderComando>(json);
+                                        if(perder != null)
+                                        {
+                                            Perdio?.Invoke(perder.PokemonRival);
+                                        }
+                                        break;
 
                                     default: break;
                                 }
@@ -166,9 +232,65 @@ namespace AdivinaQuienCliente.Services
             {
 
             }
+            finally
+            {
+                if (Servidor.Conexion != null)
+                {
+                    Juego = null;
+                    Servidor = null;
+                    JugadorCliente = null;
+                    ServidorDesconectado?.Invoke();
+
+                }
+            }
         }
 
+        public void EnviarPregunta(string pregunta)
+        {
+            if (Servidor != null && Servidor.Conexion != null)
+            {
+                Juego.Pregunta = pregunta;
+                Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {pregunta}");
+                var comando = new PreguntaComando
+                {
+                    Comando = Orden.Pregunta,
+                    Pregunta = pregunta
+                };
+                EnviarComando(comando);
+                PreguntaEnviada?.Invoke(); //pendiente cambiar en el vm
+            }
+        }
 
+        public void EnviarRespuesta(string respuesta)
+        {
+            if (Servidor != null && Servidor.Conexion != null)
+            {
+                //Juego.Historial.Add($"{Juego.Ronda}. {JugadorCliente.Nombre}: {respuesta}");
+                var comando = new RespuestaComando
+                {
+                    Comando = Orden.Respuesta,
+                    Respuesta = respuesta
+                };
+                EnviarComando(comando);
+            }
+        }
+        public void AdivinarPokemon(string pokemon)
+        {
+            if (Servidor != null && Servidor.Conexion != null)
+            {
+                if (!PokemonValidos.Contains(pokemon))
+                    return;
+
+                var comando = new AdivinarComando
+                {
+                    Comando = Orden.Adivinar,
+                    Pokemon = pokemon
+                };
+                EnviarComando(comando);
+
+
+            }
+        }
         public void SeleccionarPokemonCliente(string pokemon)
         {
             if (!PokemonValidos.Contains(pokemon))
