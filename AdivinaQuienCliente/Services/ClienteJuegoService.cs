@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Printing;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 
 namespace AdivinaQuienCliente.Services
 {
@@ -228,9 +229,9 @@ namespace AdivinaQuienCliente.Services
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                
             }
             finally
             {

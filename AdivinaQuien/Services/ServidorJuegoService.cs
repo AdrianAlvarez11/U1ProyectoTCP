@@ -87,10 +87,10 @@ namespace AdivinaQuienServidor.Services
                     Thread.Sleep(100);
                     var stream = clienteNuevo.GetStream();
 
-                    byte[] buffer = new byte[clienteNuevo.Available];
-                    stream.ReadExactly(buffer, 0, buffer.Length);
+                    byte[] buffer = new byte[1024];
+                    int bytes = stream.Read(buffer, 0, buffer.Length);
 
-                    var json = Encoding.UTF8.GetString(buffer);
+                    var json = Encoding.UTF8.GetString(buffer, 0, bytes);
 
                     var conectarcomando = JsonSerializer.Deserialize<UnirseSalaComando>(json);
 
@@ -141,9 +141,9 @@ namespace AdivinaQuienServidor.Services
                         }
                     
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    MessageBox.Show(ex.ToString());
                 }
             }
         }
@@ -311,9 +311,9 @@ namespace AdivinaQuienServidor.Services
                         }
                     }
                 }
-                catch 
-                { 
-
+                catch (Exception ex)
+                {
+                   
                 }
                 finally
                 {
