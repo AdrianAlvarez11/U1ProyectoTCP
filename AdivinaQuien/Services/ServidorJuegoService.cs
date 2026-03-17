@@ -407,8 +407,7 @@ namespace AdivinaQuienServidor.Services
                 else
                 {
                     //no adivina, manda intento de adivinar a cliente y cambia turno
-                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar: {pokemon} - Incorrecto");
-
+                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar:{pokemon} - Incorrecto");
                     CambiarTurno(); 
                 }
             }
