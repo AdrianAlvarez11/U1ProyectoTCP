@@ -89,8 +89,8 @@ namespace AdivinaQuienServidor.Services
 
                     byte[] buffer = new byte[1024];
                     int bytes = stream.Read(buffer, 0, buffer.Length);
-
                     var json = Encoding.UTF8.GetString(buffer, 0, bytes);
+
 
                     var conectarcomando = JsonSerializer.Deserialize<UnirseSalaComando>(json);
 
@@ -114,7 +114,10 @@ namespace AdivinaQuienServidor.Services
                                     Comando = Orden.JugadorRechazado
                                 };
 
+                                JugadorCliente = cliente;
                                 EnviarComando(rechazarCommand);
+                                Thread.Sleep(500);
+                                JugadorCliente = null;
 
                                 clienteNuevo.Close();
                             }

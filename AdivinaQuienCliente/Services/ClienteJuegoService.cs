@@ -258,7 +258,7 @@ namespace AdivinaQuienCliente.Services
                     Pregunta = pregunta
                 };
                 EnviarComando(comando);
-                PreguntaEnviada?.Invoke(); //pendiente cambiar en el vm
+                PreguntaEnviada?.Invoke(); 
             }
         }
 
