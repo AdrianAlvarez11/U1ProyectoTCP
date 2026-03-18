@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 namespace AdivinaQuienCliente.Views
 {
     /// <summary>
-    /// Lógica de interacción para JugadorDesconectadoView.xaml
+    /// Interaction logic for JugadorDesconectadoView.xaml
     /// </summary>
     public partial class JugadorDesconectadoView : UserControl
     {
