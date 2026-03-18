@@ -84,6 +84,16 @@
                        Margin="0,30,0,0" 
                        Foreground="#999" 
                        FontSize="10"/>
+            <TextBlock Text="Adrián Alvarez Farías" 
+           HorizontalAlignment="Center" 
+           Margin="0,0,0,0" 
+           Foreground="#999" 
+           FontSize="10"/>
+            <TextBlock Text="Erick González Aranda" 
+           HorizontalAlignment="Center" 
+           Margin="0,0,0,0" 
+           Foreground="#999" 
+           FontSize="10"/>
         </StackPanel>
     </Grid>
 </UserControl>

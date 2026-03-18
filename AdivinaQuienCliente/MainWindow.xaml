@@ -9,7 +9,7 @@
         Background="#00000000"
         SizeToContent="WidthAndHeight" 
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Adivina Quien Pokemon" Height="450" Width="800">
 
     <Window.DataContext>
         <vm:ClienteViewmodel></vm:ClienteViewmodel>
