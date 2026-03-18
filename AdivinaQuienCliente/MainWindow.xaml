@@ -19,6 +19,7 @@
             <local:ResultadoView x:Key="VistaResultados"/>
             <local:EsperandoJugadorView x:Key="VistaEsperando"/>
             <local:ElegirPersonajeView x:Key="VistaElegirPersonaje"></local:ElegirPersonajeView>
+            <local:JugadorDesconectadoView x:Key="JugadorDesconectado"></local:JugadorDesconectadoView>
         </Grid.Resources>
 
         <ContentControl>
@@ -39,6 +40,9 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.ElegirPersonaje}">
                             <Setter Property="Content" Value="{StaticResource VistaElegirPersonaje}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VistaActual}" Value="{x:Static vm:Vista.JugadorDesconectado}">
+                            <Setter Property="Content" Value="{StaticResource JugadorDesconectado}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

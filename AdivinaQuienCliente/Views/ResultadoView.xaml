@@ -21,7 +21,7 @@
 
         <Border Grid.Row="0" Background="#EE1515" Height="80" VerticalAlignment="Top">
             <StackPanel VerticalAlignment="Center">
-                <Label Content="¡TENEMOS UN GANADOR!" 
+                <Label Content="{Binding Mensaje}" 
                      HorizontalAlignment="Center" 
                      FontFamily="Bernard MT Condensed" 
                      FontSize="32" 
@@ -47,23 +47,34 @@
                     <DropShadowEffect Color="#FFDE00" BlurRadius="20" ShadowDepth="0"/>
                 </Border.Effect>
                 <Grid>
-                    <Image Source="/Resources/Images/Alakazam.png" Stretch="Uniform" Margin="10"/>
+                    <Image Source="{Binding PokemonRival.Imagen}" Stretch="Uniform" Margin="10"/>
                 </Grid>
             </Border>
 
-            <Label Content="¡Felicidades!" 
-                 HorizontalAlignment="Center" 
-                 FontSize="20" 
-                 Foreground="#3B4CCA" 
-                 FontWeight="Bold" 
-                 Margin="0,15,0,0"/>
-
-            <TextBlock Text="El Pokemon era:" 
+            <TextBlock 
                      HorizontalAlignment="Center" 
                      FontSize="28" 
                      FontFamily="Bernard MT Condensed" 
                      Foreground="#EE1515" 
                      FontWeight="Bold">
+                      
+                   <Run Text="El Pokemon de"></Run> 
+                   <Run Text="{Binding NombreServidor}"></Run> 
+                   <Run Text="era: "></Run> 
+                   <Run Text="{Binding PokemonRival.Nombre}"></Run> 
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Gray" BlurRadius="2" ShadowDepth="2" Opacity="0.5"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock 
+                Text="Espera a que el anfitrión empiece una nueva partida"
+         HorizontalAlignment="Center" 
+         FontSize="14" 
+         FontFamily="Bernard MT Condensed" 
+         Foreground="White" 
+         FontWeight="Bold">
+          
+       
                 <TextBlock.Effect>
                     <DropShadowEffect Color="Gray" BlurRadius="2" ShadowDepth="2" Opacity="0.5"/>
                 </TextBlock.Effect>
@@ -71,20 +82,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-            <Button Content="Jugar de Nuevo" 
-                  Height="40" 
-                  Width="160" 
-                  Background="#3B4CCA" 
-                  Foreground="White" 
-                  FontWeight="Bold" 
-                  FontSize="16" 
-                  Margin="10">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
+
 
             <Button Content="Salir" 
                   Height="40" 
