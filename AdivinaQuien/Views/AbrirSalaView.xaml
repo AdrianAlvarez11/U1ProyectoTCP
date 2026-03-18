@@ -5,14 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienServidor.Views"
         mc:Ignorable="d"
-        
-        Height="450" Width="400">
+        >
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
                 Stretch="UniformToFill" 
                 Opacity="0.15"/>
     </UserControl.Background>
-    <Grid>
+    <Grid >
         <Border Background="#EE1515" Height="100" VerticalAlignment="Top"/>
         <StackPanel Margin="20">
             <Label Content="ADIVINA QUIÉN" 
