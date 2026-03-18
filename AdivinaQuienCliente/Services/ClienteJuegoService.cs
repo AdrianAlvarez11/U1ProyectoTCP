@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Printing;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 
 namespace AdivinaQuienCliente.Services
 {
@@ -125,7 +126,7 @@ namespace AdivinaQuienCliente.Services
                 {
                     while (Servidor.Conexion.Connected)
                     {
-                        if(Servidor.Conexion.Available > 0/* && !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectRead*/)
+                        if(Servidor.Conexion.Available > 0 /*&& !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectWrite)*/)
                         {
                             var stream = Servidor.Conexion.GetStream();
                             var buffer = new byte[Servidor.Conexion.Available];
@@ -228,9 +229,9 @@ namespace AdivinaQuienCliente.Services
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                
             }
             finally
             {
@@ -257,7 +258,7 @@ namespace AdivinaQuienCliente.Services
                     Pregunta = pregunta
                 };
                 EnviarComando(comando);
-                PreguntaEnviada?.Invoke(); //pendiente cambiar en el vm
+                PreguntaEnviada?.Invoke(); 
             }
         }
 

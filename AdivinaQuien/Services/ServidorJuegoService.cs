@@ -87,10 +87,10 @@ namespace AdivinaQuienServidor.Services
                     Thread.Sleep(100);
                     var stream = clienteNuevo.GetStream();
 
-                    byte[] buffer = new byte[clienteNuevo.Available];
-                    stream.ReadExactly(buffer, 0, buffer.Length);
+                    byte[] buffer = new byte[1024];
+                    int bytes = stream.Read(buffer, 0, buffer.Length);
+                    var json = Encoding.UTF8.GetString(buffer, 0, bytes);
 
-                    var json = Encoding.UTF8.GetString(buffer);
 
                     var conectarcomando = JsonSerializer.Deserialize<UnirseSalaComando>(json);
 
@@ -114,7 +114,10 @@ namespace AdivinaQuienServidor.Services
                                     Comando = Orden.JugadorRechazado
                                 };
 
+                                JugadorCliente = cliente;
                                 EnviarComando(rechazarCommand);
+                                Thread.Sleep(500);
+                                JugadorCliente = null;
 
                                 clienteNuevo.Close();
                             }
@@ -141,9 +144,9 @@ namespace AdivinaQuienServidor.Services
                         }
                     
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    MessageBox.Show(ex.ToString());
                 }
             }
         }
@@ -311,9 +314,9 @@ namespace AdivinaQuienServidor.Services
                         }
                     }
                 }
-                catch 
-                { 
-
+                catch (Exception ex)
+                {
+                   
                 }
                 finally
                 {
@@ -404,8 +407,7 @@ namespace AdivinaQuienServidor.Services
                 else
                 {
                     //no adivina, manda intento de adivinar a cliente y cambia turno
-                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar: {pokemon} - Incorrecto");
-
+                    Juego.Historial.Add($"{Juego.Ronda}. {JugadorServer.Nombre} intentó adivinar:{pokemon} - Incorrecto");
                     CambiarTurno(); 
                 }
             }
