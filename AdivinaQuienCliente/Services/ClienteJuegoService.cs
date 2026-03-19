@@ -13,7 +13,7 @@ namespace AdivinaQuienCliente.Services
 {
     public class ClienteJuegoService
     {
-        public Jugador Servidor { get; set; } = new();
+        public Jugador? Servidor { get; set; } 
         public Jugador? JugadorCliente { get; set; }
         public List<string> PokemonValidos = new List<string>()
         {
@@ -70,6 +70,8 @@ namespace AdivinaQuienCliente.Services
                 throw new ArgumentException("Tu nombre debe tener al menos 3 caracteres");
             }
 
+            Servidor = new();
+
             if(Servidor.Conexion == null)
             {
                 try
@@ -98,7 +100,9 @@ namespace AdivinaQuienCliente.Services
                 }
                 catch 
                 {
+                    Servidor.Conexion = null;
                     ConexionFallida?.Invoke();
+                    
                 }
 
 
@@ -124,17 +128,25 @@ namespace AdivinaQuienCliente.Services
             {
                 if(Servidor!=null && Servidor.Conexion!= null)
                 {
-                    while (Servidor.Conexion.Connected)
-                    {
-                        if(Servidor.Conexion.Available > 0 /*&& !Servidor.Conexion.Client.Poll(1000, SelectMode.SelectWrite)*/)
-                        {
-                            var stream = Servidor.Conexion.GetStream();
-                            var buffer = new byte[Servidor.Conexion.Available];
-                            stream.ReadExactly(buffer, 0, buffer.Length);
-                            var json = Encoding.UTF8.GetString(buffer);
+                    var client = Servidor.Conexion;
+                    byte[] buffer = new byte[1024];
 
-                            var comando = JsonSerializer.Deserialize<Comandos>(json);
-                            if (comando != null)
+                    while (true)
+                    {
+
+                        var stream = client.GetStream();
+                        int bytes = stream.Read(buffer, 0, buffer.Length);
+
+                        if (bytes == 0)
+                        {
+                            // el cliente se desconectó, manda a finally y avisa
+                            break;
+                        }
+
+                        var json = Encoding.UTF8.GetString(buffer, 0, bytes);
+
+                        var comando = JsonSerializer.Deserialize<Comandos>(json);
+                        if (comando != null)
                             {
                                 switch (comando.Comando)
                                 {
@@ -225,7 +237,8 @@ namespace AdivinaQuienCliente.Services
                                 }
 
                             }
-                        }
+                        
+
                     }
                 }
             }

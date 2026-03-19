@@ -9,6 +9,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -84,6 +85,7 @@ namespace AdivinaQuienCliente.Viewmodels
         public ICommand ModoAdivinarCommand { get; set; }
         public ICommand AdivinarCommand { get; set; }
         public ICommand VolverInicioCommand { get; set; }
+        public ICommand SalirCommand { get; set; }
 
 
         public bool EsMiTurno => Juego?.JugadorTurno?.Nombre == NombreCliente;
@@ -104,6 +106,8 @@ namespace AdivinaQuienCliente.Viewmodels
             ModoAdivinarCommand = new RelayCommand(EntrarAdivinando);
             AdivinarCommand = new RelayCommand<string?>(Adivinar);
             VolverInicioCommand = new RelayCommand(VolverInicio);
+            SalirCommand = new RelayCommand(SalirDelJuego);
+            
 
 
             service.ClienteAceptado += Service_ClienteAceptado;
@@ -119,6 +123,11 @@ namespace AdivinaQuienCliente.Viewmodels
 
         }
 
+        private void SalirDelJuego()
+        {
+            Application.Current.Shutdown();
+        }
+
         private void Service_ConexionFallida()
         {
             Mensaje = "No se encontró una sala abierta con esa dirección IP";
@@ -132,11 +141,18 @@ namespace AdivinaQuienCliente.Viewmodels
             PokemonRival = null;
             Mensaje = "";
             NombreCliente = null;
+            NombreServidor = null;
+            OnPropertyChanged(nameof(Mensaje));
+            OnPropertyChanged(nameof(Juego));
+            OnPropertyChanged(nameof(NombreCliente));
+            OnPropertyChanged(nameof(NombreServidor));
+            OnPropertyChanged(nameof(PokemonRival));
         }
 
         private void Service_ServidorDesconectado()
         {
             VistaActual = Vista.JugadorDesconectado;
+           
         }
 
         private void Service_Perdio(string pokemonRival)

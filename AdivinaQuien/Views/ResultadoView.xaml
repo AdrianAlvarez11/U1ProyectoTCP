@@ -60,7 +60,7 @@
                       
                    <Run Text="El Pokemon de"></Run> 
                    <Run Text="{Binding NombreCliente}"></Run> 
-                   <Run Text="era: "></Run> 
+                   <Run Text="era:"></Run> 
                    <Run Text="{Binding PokemonRival.Nombre}"></Run>
                 <TextBlock.Effect>
                     <DropShadowEffect Color="Gray" BlurRadius="2" ShadowDepth="2" Opacity="0.5"/>
@@ -84,7 +84,7 @@
                 </Button.Resources>
             </Button>
 
-            <Button Content="Salir" 
+            <Button Command="{Binding SalirCommand}" Content="Salir" 
                   Height="40" 
                   Width="100" 
                   Background="#555" 

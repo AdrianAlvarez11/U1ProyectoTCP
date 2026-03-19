@@ -5,88 +5,86 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdivinaQuienCliente.Views"
         mc:Ignorable="d"
-        Height="500" Width="850">
+        >
+    
+
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
-              Stretch="UniformToFill" 
-              Opacity="0.15"/>
+                Stretch="UniformToFill" 
+                Opacity="0.15"/>
     </UserControl.Background>
-    <Grid >
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height=".3*"/>
             <RowDefinition Height=".7*"/>
-           
         </Grid.RowDefinitions>
+
         <Border Grid.Row="0" Background="#EE1515" Height="100" VerticalAlignment="Top"/>
-        <StackPanel >
+
+        <StackPanel Grid.Row="0">
             <Label Content="ADIVINA QUIÉN" 
-                HorizontalAlignment="Center" 
-                FontFamily="Bernard MT Condensed" 
-                FontSize="40" 
-                Foreground="White" 
-                FontWeight="Bold">
+               HorizontalAlignment="Center" 
+               FontFamily="Bernard MT Condensed" 
+               FontSize="40" 
+               Foreground="White" 
+               FontWeight="Bold">
                 <Label.Effect>
                     <DropShadowEffect Color="#3B4CCA" BlurRadius="2" ShadowDepth="4" Direction="320"/>
                 </Label.Effect>
             </Label>
 
             <Label Content="Pokémon" 
-                HorizontalAlignment="Center" 
-                FontSize="16" 
-                Foreground="#FFDE00" 
-                FontWeight="Bold" 
-                >
+               HorizontalAlignment="Center" 
+               FontSize="16" 
+               Foreground="#FFDE00" 
+               FontWeight="Bold">
                 <Label.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="1" ShadowDepth="2"/>
                 </Label.Effect>
             </Label>
+
             <Label Content="Elige a tu Pokemon" Foreground="White" FontSize="30" HorizontalAlignment="Center" FontFamily="Bernard MT Condensed" FontWeight="Bold" />
         </StackPanel>
 
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Pokemons}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="6" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="150">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
+                                <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
+                                    <Image Source="{Binding Imagen}" Stretch="Uniform"/>
+                                </Border>
 
+                                <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
 
-        <ItemsControl ItemsSource="{Binding Pokemons}" Grid.Row="1" VerticalAlignment="Top">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="White" Margin="5" Padding="8" CornerRadius="12" BorderBrush="#3B4CCA" BorderThickness="2" Height="150" Width="150">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Border Grid.Row="0" Background="#F2F2F2" CornerRadius="8">
-                                <Image Source="{Binding Imagen}" Stretch="Uniform"/>
-                            </Border>
-
-                            <TextBlock Grid.Row="1" Text="{Binding Nombre}" Foreground="#333" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" FontSize="12"/>
-
-                            <Button Command="{Binding DataContext.ElegirPokemonCommand,
-                                        RelativeSource={RelativeSource AncestorType=Window}}" 
-                                    CommandParameter="{Binding Nombre}" Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="5"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-
-
-            </ItemsControl.ItemTemplate>
-
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-
-
+                                <Button Command="{Binding DataContext.ElegirPokemonCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                    CommandParameter="{Binding Nombre}" 
+                                    Grid.Row="2" Content="Elegir" Height="24" Background="#EE1515" Foreground="White" FontSize="10" FontWeight="Bold">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="5"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
