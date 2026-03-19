@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AdivinaQuienCliente.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="850">
+             >
     <UserControl.Background>
         <ImageBrush ImageSource="https://wallpapers.com/images/hd/colorful-pokemon-anime-hd-12w1bgtvd51z5zrt.jpg" 
                     Stretch="UniformToFill" 

@@ -79,6 +79,7 @@ namespace AdivinaQuienServidor.Services
             Servidor = new(ipserver);
             Servidor.Start();
 
+            byte[] buffer = new byte[1024];
             while (salaAbierta)
             {
                 try
@@ -87,7 +88,6 @@ namespace AdivinaQuienServidor.Services
                     Thread.Sleep(100);
                     var stream = clienteNuevo.GetStream();
 
-                    byte[] buffer = new byte[1024];
                     int bytes = stream.Read(buffer, 0, buffer.Length);
                     var json = Encoding.UTF8.GetString(buffer, 0, bytes);
 
@@ -198,19 +198,24 @@ namespace AdivinaQuienServidor.Services
             if (JugadorCliente != null && JugadorCliente.Conexion!=null)
             {
                 var client = JugadorCliente.Conexion;
+                byte[] buffer = new byte[1024];
                 try
                 {
-                    while (client.Connected)
+                    while (true)
                     {
-                        if (client.Available > 0 /*&& !client.Client.Poll(1000, SelectMode.SelectRead)*/)
-                        {
-                            var stream = client.GetStream();
-                            var buffer = new byte[client.Available];
-                            stream.ReadExactly(buffer, 0, buffer.Length);
-                            var json = Encoding.UTF8.GetString(buffer);
+                        var stream = client.GetStream();
+                        int bytes = stream.Read(buffer, 0, buffer.Length);
 
-                            var comando = JsonSerializer.Deserialize<Comandos>(json);
-                            if (comando != null)
+                        if (bytes == 0)
+                        {
+                            // el cliente se desconectó, manda a finally y avisa
+                            break;
+                        }
+
+                        var json = Encoding.UTF8.GetString(buffer, 0, bytes);
+
+                        var comando = JsonSerializer.Deserialize<Comandos>(json);
+                        if (comando != null)
                             {
                                 switch (comando.Comando)
                                 {
@@ -310,9 +315,11 @@ namespace AdivinaQuienServidor.Services
                                     default: break;
                                 }
 
-                            }
+                            
                         }
                     }
+             
+ 
                 }
                 catch (Exception ex)
                 {

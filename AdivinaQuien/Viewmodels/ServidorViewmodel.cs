@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -79,6 +80,7 @@ namespace AdivinaQuienServidor.Viewmodels
         public ICommand AdivinarCommand { get; set; }
         public ICommand VolverAJugarCommand { get; set; }
         public ICommand VolverInicioCommand { get; set; }
+        public ICommand SalirCommand { get; set; }
 
 
         public EstadoJuego? Juego { get; set; }
@@ -105,6 +107,7 @@ namespace AdivinaQuienServidor.Viewmodels
             AdivinarCommand = new RelayCommand<string?>(Adivinar);
             VolverAJugarCommand = new RelayCommand(VolverAJugar);
             VolverInicioCommand = new RelayCommand(VolverInicio);
+            SalirCommand = new RelayCommand(SalirDelJuego);
 
 
             service.ClienteConectado += Service_ClienteConectado;
@@ -117,9 +120,15 @@ namespace AdivinaQuienServidor.Viewmodels
             service.ClienteDesconectado += Service_ClienteDesconectado;
         }
 
+        private void SalirDelJuego()
+        {
+            Application.Current.Shutdown();
+        }
+
         private void Service_ClienteDesconectado()
         {
             VistaActual = Vista.JugadorDesconectado;
+
         }
 
         private void VolverInicio()
@@ -128,8 +137,13 @@ namespace AdivinaQuienServidor.Viewmodels
             Juego = null;
             PokemonRival = null;
             Mensaje = "";
+            NombreServidor = null;
             NombreCliente = null;
-
+            OnPropertyChanged(nameof(Mensaje));
+            OnPropertyChanged(nameof(Juego));
+            OnPropertyChanged(nameof(NombreCliente));
+            OnPropertyChanged(nameof(NombreServidor));
+            OnPropertyChanged(nameof(PokemonRival));
 
         }
 
@@ -322,6 +336,7 @@ namespace AdivinaQuienServidor.Viewmodels
                 service.AbrirSala(NombreServidor);
                 VistaActual= Vista.EsperandoJugador;
                 Mensaje = "";
+
             }
             else
             {
